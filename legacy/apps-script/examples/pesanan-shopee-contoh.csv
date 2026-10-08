@@ -1,0 +1,4 @@
+No. Resi,No. Pesanan,Username (Pembeli),Nama Penerima,Status Pesanan,Nama Produk,Nama Variasi,Nomor Referensi SKU,Jumlah
+TESTRESI001,TESTORDER001,pembeli_contoh,Penerima Contoh,Perlu Dikirim,Serum Wajah,30 ml,SERUM-30,2
+TESTRESI001,TESTORDER001,pembeli_contoh,Penerima Contoh,Perlu Dikirim,Sunscreen,50 ml,SUN-50,1
+TESTRESI002,TESTORDER002,pembeli_contoh_2,Penerima Contoh 2,Perlu Dikirim,Toner,100 ml,TONER-100,1

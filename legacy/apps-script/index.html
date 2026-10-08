@@ -245,6 +245,7 @@
     <button type="button" data-mode="admin" hidden>Admin</button>
   </nav>
   <label class="station-field">Stasiun <input id="stationName" maxlength="30" value="Meja 1"></label>
+  <a data-picker-link href="picker.html" class="btn small" style="color:#fff;border-color:#ffffff66;background:transparent">Picker HP ↗</a>
   <span id="roleBadge" class="role-badge" hidden></span>
   <button type="button" class="btn small" id="btnLogoutRole" style="background:transparent;border-color:rgba(255,255,255,.4);color:#fff" hidden>Ganti pengguna</button>
   <button type="button" class="btn small" id="btnConnSettings" style="background:transparent;border-color:rgba(255,255,255,.4);color:#fff" hidden>Sambungan</button>
@@ -262,8 +263,9 @@
       <select id="camSelect" aria-label="Pilih kamera"></select>
       <span id="camInfo" class="muted"></span>
     </div>
-    <h3>Rekaman di stasiun ini</h3>
-    <ul id="queue" class="queue"><li class="empty">Belum ada rekaman sejak halaman dibuka.</li></ul>
+    <h3>Bukti video packing</h3>
+    <p class="note">Status “Tersimpan di Drive” berarti video dan catatan resi sudah tersimpan. Jangan hapus data browser sebelum upload selesai.</p>
+    <ul id="queue" class="queue"><li class="empty">Belum ada rekaman.</li></ul>
   </section>
 
   <section class="work">
@@ -299,8 +301,8 @@
 <main id="viewOrders" class="orders-view" hidden>
   <div id="drop" class="drop" tabindex="0" role="button" aria-label="Unggah file ekspor pesanan Shopee" hidden>
     <input type="file" id="dropFile" accept=".xlsx,.xls,.csv" hidden>
-    <div class="drop-title">Letakkan file ekspor Shopee di sini</div>
-    <div class="drop-sub">atau klik untuk memilih file (.xlsx / .csv). Sistem membaca nomor resi, nama pembeli, dan barang beserta jumlahnya.</div>
+    <div class="drop-title">1. Impor pesanan Shopee</div>
+    <div class="drop-sub">Letakkan file di sini atau klik untuk memilih file (.xlsx / .csv). Sistem membaca nomor resi, nama pembeli, dan barang beserta jumlahnya.</div>
     <div id="dropStatus" class="drop-status" hidden></div>
   </div>
 
@@ -335,6 +337,7 @@
       <button type="button" data-tab="rec" class="on">Rekaman harian</button>
       <button type="button" data-tab="search">Cari resi</button>
       <button type="button" data-tab="packers">Packer</button>
+      <button type="button" data-tab="pickers">Akun picker</button>
       <button type="button" data-tab="orders">Pesanan &amp; Shopee</button>
       <button type="button" data-tab="settings">Pengaturan</button>
       <span class="spacer"></span>
@@ -381,6 +384,26 @@
       <div class="tbl-wrap"><table>
         <thead><tr><th>Nama</th><th>Kode badge</th><th>Status</th><th></th></tr></thead>
         <tbody id="pkRows"></tbody>
+      </table></div>
+    </section>
+
+    <section data-panel="pickers" hidden>
+      <div class="card stack" style="margin-bottom:16px">
+        <h3 id="pickerFormTitle">Tambah akun picker</h3>
+        <p class="note" style="margin:0">Picker masuk di HP memakai kode dan PIN pribadi. <a data-picker-link href="picker.html">Buka aplikasi picker →</a></p>
+        <div class="form-grid">
+          <label>Nama picker<input id="piName" maxlength="60" autocomplete="name"></label>
+          <label>Kode login<input id="piCode" maxlength="30" placeholder="PICK-001" autocomplete="off"></label>
+          <label>PIN (4–8 angka)<input id="piPin" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password"></label>
+        </div>
+        <div class="row" style="margin:0">
+          <button type="button" class="btn primary" id="btnPiSave">Simpan picker</button>
+          <button type="button" class="btn" id="btnPiCancel" hidden>Batal ubah</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Nama</th><th>Kode login</th><th>Status</th><th></th></tr></thead>
+        <tbody id="piRows"></tbody>
       </table></div>
     </section>
 
@@ -460,10 +483,10 @@
 <div id="connGate" class="modal" hidden>
   <div class="modal-card" style="max-width:480px">
     <div class="modal-head"><h3 style="margin:0">Sambungkan ke backend</h3><button type="button" class="btn small" id="connClose" hidden>Tutup</button></div>
-    <p class="note">Isi sekali per perangkat. Dapatkan dari editor Apps Script Anda: jalankan fungsi <code>setup()</code>, lalu buka menu <b>View → Logs</b> (atau lihat tab Pengaturan di Admin setelah backend tersambung).</p>
+    <p class="note">Isi sekali per perangkat. Dapatkan dari admin saat perangkat pertama kali dipasang: jalankan fungsi <code>setup_()</code> di editor Apps Script, lalu buka menu <b>View → Logs</b> (atau lihat tab Pengaturan di Admin setelah backend tersambung).</p>
     <div class="form-grid" style="grid-template-columns:1fr">
       <label>URL Web App (berakhiran /exec)<input id="connUrl" placeholder="https://script.google.com/macros/s/.../exec"></label>
-      <label>Kunci stasiun (Station Key)<input id="connKey" placeholder="kode acak dari Logs"></label>
+      <label>Kunci stasiun (Station Key)<input id="connKey" type="password" autocomplete="off" placeholder="kode acak dari Logs"></label>
     </div>
     <p id="connErr" class="note" style="color:var(--rec)" hidden></p>
     <div class="row"><button type="button" class="btn primary" id="connSave">Simpan &amp; lanjutkan</button></div>
@@ -481,13 +504,17 @@
 
     <div id="loginPickers" class="stack" style="margin-top:22px">
       <button type="button" class="login-role-btn" id="btnPickUser">
-        <b>Login</b>
+        <b>Masuk stasiun packer</b>
         <span>Untuk packer di stasiun — merekam packing dan melihat daftar pesanan.</span>
       </button>
+      <a data-picker-link class="login-role-btn" href="picker.html" style="text-decoration:none;color:inherit">
+        <b>Login picker · HP</b><span>Cari resi, periksa barang, dan tandai siap packing.</span>
+      </a>
       <button type="button" class="login-role-btn admin" id="btnPickAdmin">
         <b>Login sebagai Administrator</b>
         <span>Akses penuh: semua menu, impor pesanan, dan pengaturan.</span>
       </button>
+      <button type="button" class="login-back" id="loginConnection">Pengaturan sambungan</button>
     </div>
 
     <div id="loginAdminPin" class="stack" style="margin-top:18px;text-align:left" hidden>
@@ -529,32 +556,42 @@ const SS = {
   del(k) { try { sessionStorage.removeItem('pr_' + k); } catch (e) {} }
 };
 const ROLE = { value: '' }; // '' | 'user' | 'admin' — diminta ulang tiap tab/sesi baru
-/* Alamat backend & kunci stasiun sudah tertanam, jadi pengguna tidak perlu mengisinya.
-   Jika kunci diganti di menu Admin, nilai baru disimpan di browser dan menimpa nilai bawaan ini. */
-const DEFAULT_BACKEND_URL = 'https://script.google.com/macros/s/AKfycbyLE8G_bAtwIhgzS0GBdi0bQbtOUYEEQ8dYkVKXZ1EtpV6AeyP6JmcHyMK50ChJ2X66/exec';
-const DEFAULT_STATION_KEY = 'ccb5974335ec48cd819c6d60c4d12eea';
-const BACKEND = { url: S.get('backendUrl', '') || DEFAULT_BACKEND_URL, key: S.get('backendKey', '') || DEFAULT_STATION_KEY };
+// Connection belongs to this device; credentials are never embedded in source.
+const HOSTED = !!(window.google && google.script && google.script.run);
+const BACKEND = { url: S.get('backendUrl', '') || document.querySelector('meta[name="app-url"]')?.content || '', key: S.get('backendKey', '') };
+function updatePickerLinks() {
+  document.querySelectorAll('[data-picker-link]').forEach(a => {
+    a.href = HOSTED && BACKEND.url ? BACKEND.url + '?app=picker' : 'picker.html';
+    a.target = HOSTED ? '_top' : '_self';
+  });
+}
+updatePickerLinks();
 
 async function run(fn, ...args) {
-  if (!BACKEND.url || !BACKEND.key) throw new Error('BACKEND_NOT_SET');
-  let res;
-  try {
-    res = await fetch(BACKEND.url, {
-      method: 'POST',
-      // text/plain (bukan application/json) sengaja dipakai supaya browser tidak
-      // mengirim preflight OPTIONS, karena Apps Script tidak menanganinya.
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ key: BACKEND.key, fn: fn, args: args })
-    });
-  } catch (e) {
-    throw new Error('Tidak bisa menghubungi backend. Periksa koneksi internet dan URL backend di Pengaturan Sambungan.');
-  }
-  if (!res.ok) throw new Error('Backend menjawab error HTTP ' + res.status + '.');
+  if ((!BACKEND.url && !HOSTED) || !BACKEND.key) throw new Error('BACKEND_NOT_SET');
   let json;
-  try { json = await res.json(); } catch (e) { throw new Error('Jawaban backend tidak valid. Periksa URL backend (harus berakhiran /exec).'); }
-  if (!json.ok) throw new Error(json.error || 'Backend menolak permintaan.');
+  if (HOSTED) {
+    json = await new Promise((resolve, reject) => {
+      google.script.run.withSuccessHandler(resolve).withFailureHandler(reject).stationRpc(BACKEND.key, fn, args);
+    });
+  } else {
+    let res;
+    try {
+      res = await fetch(BACKEND.url, {
+        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ key: BACKEND.key, fn: fn, args: args }),
+        signal: AbortSignal.timeout(90000)
+      });
+    } catch (e) {
+      throw new Error('Backend belum dapat dihubungi. Periksa koneksi dan Sambungan, lalu coba lagi.');
+    }
+    if (!res.ok) throw new Error('Backend menjawab error HTTP ' + res.status + '.');
+    try { json = await res.json(); } catch (e) { throw new Error('Jawaban backend tidak valid. Periksa URL Web App /exec.'); }
+  }
+  if (!json || !json.ok) throw new Error(json && json.error || 'Backend menolak permintaan.');
   return json.result;
 }
+
 function h(tag, attrs, ...kids) {
   const el = document.createElement(tag);
   Object.entries(attrs || {}).forEach(([k, v]) => {
@@ -631,9 +668,11 @@ const camVideo = document.createElement('video');
 camVideo.muted = true; camVideo.playsInline = true;
 
 async function startCamera(deviceId) {
+  if (ST.current || ST.stopping) { toast('Selesaikan rekaman sebelum mengganti kamera.', true); return; }
   $('camMsg').hidden = false;
   $('camMsg').textContent = 'Menyalakan kamera…';
   if (ST.stream) ST.stream.getTracks().forEach(t => t.stop());
+  ST.stream = null;
   try {
     const video = deviceId ? { deviceId: { exact: deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } }
                            : { width: { ideal: 1280 }, height: { ideal: 720 } };
@@ -729,6 +768,7 @@ function setPacker(p) {
   $('packerCard').classList.toggle('none', !p);
   S.set('packer', p ? p.id : '');
   renderPackerSelect();
+  processQueue();
 }
 $('packerSelect').addEventListener('change', e => {
   if (ST.current) { toast('Selesaikan rekaman dulu sebelum ganti packer.', true); renderPackerSelect(); return; }
@@ -739,7 +779,7 @@ $('stationName').addEventListener('change', e => S.set('station', e.target.value
 
 /* ============================== SCAN ============================== */
 function focusScan() {
-  if (ST.mode !== 'station' || !$('modal').hidden) return;
+  if (ST.mode !== 'station' || !$('modal').hidden || !$('connGate').hidden || !$('loginGate').hidden || !['user', 'admin'].includes(ROLE.value)) return;
   const a = document.activeElement;
   if (a && a !== document.body && a !== $('scan') && ['INPUT', 'SELECT', 'TEXTAREA'].includes(a.tagName)) return;
   $('scan').focus();
@@ -756,212 +796,424 @@ $('scan').addEventListener('keydown', e => {
 let scanBusy = false;
 async function onScan(raw) {
   const v = cleanCode(raw);
-  if (!v || scanBusy) return;
+  if (!v) return;
+  if (scanBusy) { toast('Tunggu pengecekan pesanan atau penyimpanan rekaman selesai, lalu scan kembali.', true); return; }
   scanBusy = true;
   try {
-    const pk = CFG.packers.find(p => p.code === v);
-    if (pk) {
-      if (ST.current) { beep(220, 2); toast('Selesaikan rekaman dulu sebelum ganti packer.', true); return; }
-      setPacker(pk); beep(1200); toast('Packer: ' + pk.name);
+    if (!['user', 'admin'].includes(ROLE.value)) throw new Error('Masuk sebagai packer untuk merekam packing.');
+    const badge = CFG.packers.find(p => p.code === v);
+    if (badge) {
+      if (ST.current || ST.stopping) throw new Error('Selesaikan rekaman sebelum mengganti packer.');
+      setPacker(badge); beep(1200); toast('Packer: ' + badge.name); return;
+    }
+    if (STOP_CODES.includes(v) || (ST.current && ST.current.resi === v)) {
+      if (ST.current || ST.stopping) await stopRecording(); else toast('Tidak ada rekaman yang berjalan.');
       return;
     }
-    if (STOP_CODES.includes(v)) {
-      if (ST.current) await stopRecording(); else toast('Tidak ada rekaman yang berjalan.');
-      return;
-    }
-    if (!/^[A-Z0-9\-_.]{5,64}$/.test(v)) { beep(220, 2); toast('Barcode tidak dikenali sebagai nomor resi: ' + v, true); return; }
-    if (ST.current) {
-      if (ST.current.resi === v) { await stopRecording(); return; }
-      await stopRecording();
-    }
-    await startRecording(v);
-  } finally {
-    scanBusy = false;
-  }
+    if (!/^[A-Z0-9\-_.]{5,64}$/.test(v)) throw new Error('Barcode tidak dikenali sebagai nomor resi: ' + v);
+    if (!ST.packer) throw new Error('Masuk atau pilih packer terlebih dahulu.');
+    // Keep recording the current parcel while checking the next scan. An unknown
+    // barcode must never start a recording or silently end the previous parcel.
+    const info = await run('lookupResi', v);
+    validatePackingOrder(info);
+    if (ST.current || ST.stopping) await stopRecording();
+    await startRecording(v, info);
+  } catch (e) {
+    beep(220, 2); toast(errMsg(e), true);
+    if (!ST.current) { $('state').className = 'state'; $('stateLabel').textContent = errMsg(e); }
+  } finally { scanBusy = false; }
 }
-$('btnStop').addEventListener('click', () => { if (ST.current) stopRecording(); });
+$('btnStop').addEventListener('click', () => {
+  stopRecording().catch(e => toast(errMsg(e), true));
+});
+
+function validatePackingOrder(info) {
+  if (!info || !info.order) throw new Error('Resi belum diimpor. Minta admin mengimpor data order Shopee terlebih dahulu.');
+  if (/cancel|batal|unpaid|belum\s*bayar/i.test(info.order.status || '')) throw new Error('Pesanan dibatalkan atau belum dibayar. Packing tidak dapat dimulai.');
+  if (!Array.isArray(info.order.items) || !info.order.items.length) throw new Error('Daftar barang pesanan kosong. Minta admin memeriksa hasil impor.');
+}
+
+/* ============================== LOCAL VIDEO STORAGE ============================== */
+// Chunks are stored separately to avoid rewriting the whole video every second.
+// IndexedDB is scoped to this browser/origin. Clearing site data deletes pending
+// local copies; only a confirmed Drive upload is considered saved evidence.
+let videoDBPromise = null;
+let queueRestorePromise = null;
+let videoStorageError = '';
+function storageWarning(error) {
+  videoStorageError = 'Penyimpanan video lokal tidak tersedia: ' + errMsg(error) + '. Rekaman baru diblokir. Unduh cadangan yang belum tersimpan, kosongkan ruang perangkat, lalu muat ulang.';
+  let el = $('videoStorageWarning');
+  if (!el) {
+    el = h('div', { id: 'videoStorageWarning', class: 'status-line bad', role: 'alert', style: 'margin:12px 0;white-space:normal' });
+    $('queue').before(el);
+  }
+  el.textContent = videoStorageError;
+  el.hidden = false;
+  toast(videoStorageError, true);
+}
+function prepareVideoStorage() {
+  if (videoDBPromise) return videoDBPromise;
+  videoDBPromise = new Promise((resolve, reject) => {
+    if (!window.indexedDB) { reject(new Error('Browser tidak mendukung IndexedDB')); return; }
+    const req = indexedDB.open('meirista-packing-videos', 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('jobs')) db.createObjectStore('jobs', { keyPath: 'key' });
+      if (!db.objectStoreNames.contains('chunks')) {
+        const store = db.createObjectStore('chunks', { keyPath: ['jobKey', 'index'] });
+        store.createIndex('jobKey', 'jobKey', { unique: false });
+      }
+    };
+    req.onsuccess = () => {
+      req.result.onversionchange = () => { req.result.close(); storageWarning('Penyimpanan dibuka di versi aplikasi lain'); };
+      resolve(req.result);
+    };
+    req.onerror = () => reject(req.error || new Error('Gagal membuka penyimpanan video'));
+    req.onblocked = () => reject(new Error('Tutup tab packing lain, lalu muat ulang'));
+  }).catch(e => { storageWarning(e); throw e; });
+  return videoDBPromise;
+}
+async function videoTransaction(stores, mode, work) {
+  const db = await prepareVideoStorage();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(stores, mode);
+    let result;
+    tx.oncomplete = () => resolve(result);
+    tx.onerror = () => reject(tx.error || new Error('Gagal menyimpan video lokal'));
+    tx.onabort = () => reject(tx.error || new Error('Transaksi penyimpanan video dibatalkan'));
+    try { result = work(tx); } catch (e) { try { tx.abort(); } catch (_) {} reject(e); }
+  });
+}
+function storedJob(job) {
+  return {
+    key: job.key, backendUrl: job.backendUrl, clientRecordId: job.clientRecordId, resi: job.resi, packer: job.packer, station: job.station,
+    startAt: new Date(job.startAt).toISOString(), endAt: job.endAt ? new Date(job.endAt).toISOString() : null,
+    mime: job.mime, status: job.status, error: job.error || '', progress: job.progress || 0,
+    uploadId: job.uploadId || null, offset: job.offset || 0, uploaded: !!job.uploaded,
+    interrupted: !!job.interrupted, interruptionReason: job.interruptionReason || '', recordId: job.recordId || ''
+  };
+}
+function persistVideoJob(job) {
+  return videoTransaction(['jobs'], 'readwrite', tx => tx.objectStore('jobs').put(storedJob(job)));
+}
+function persistVideoChunk(job, chunk, index) {
+  return videoTransaction(['chunks'], 'readwrite', tx => tx.objectStore('chunks').put({ jobKey: job.key, index: index, blob: chunk, at: new Date().toISOString() }));
+}
+function deleteVideoJob(job) {
+  return videoTransaction(['jobs', 'chunks'], 'readwrite', tx => {
+    tx.objectStore('jobs').delete(job.key);
+    const cursor = tx.objectStore('chunks').index('jobKey').openCursor(IDBKeyRange.only(job.key));
+    cursor.onsuccess = () => { const row = cursor.result; if (row) { row.delete(); row.continue(); } };
+  });
+}
+async function loadVideoJobs() {
+  const jobs = [], chunks = [];
+  await videoTransaction(['jobs', 'chunks'], 'readonly', tx => {
+    tx.objectStore('jobs').getAll().onsuccess = e => jobs.push(...e.target.result);
+    tx.objectStore('chunks').getAll().onsuccess = e => chunks.push(...e.target.result);
+  });
+  return jobs.map(job => {
+    const parts = chunks.filter(c => c.jobKey === job.key).sort((a, b) => a.index - b.index);
+    job.startAt = new Date(job.startAt);
+    job.endAt = job.endAt ? new Date(job.endAt) : new Date(parts.length ? parts[parts.length - 1].at : job.startAt);
+    job.blob = new Blob(parts.map(c => c.blob), { type: job.mime });
+    if (job.status === 'recording') {
+      job.interrupted = true;
+      job.interruptionReason = 'Halaman atau perangkat berhenti saat merekam. Video mungkin tidak lengkap; periksa sebelum dipakai sebagai bukti.';
+      job.status = 'gagal'; job.error = job.interruptionReason;
+    } else if (job.status === 'mengunggah') {
+      job.status = 'antre';
+    }
+    if (!job.blob.size && job.status !== 'tersimpan') { job.status = 'gagal'; job.error = 'Tidak ada potongan video yang berhasil disimpan. Rekam ulang paket ini.'; }
+    return job;
+  });
+}
+function restoreQueue() {
+  if (queueRestorePromise) return queueRestorePromise;
+  queueRestorePromise = (async () => {
+    try {
+      const restored = await loadVideoJobs();
+      const existing = new Set(ST.queue.map(j => j.key));
+      for (const job of restored) {
+        if (job.status === 'tersimpan') { await deleteVideoJob(job); continue; }
+        if (!existing.has(job.key)) ST.queue.push(job);
+      }
+      ST.queue.sort((a, b) => b.startAt - a.startAt);
+      renderQueue();
+      if (restored.some(j => j.status !== 'tersimpan')) toast('Antrean video lokal dipulihkan. Rekaman terputus perlu diperiksa dan diunggah ulang secara manual.', true);
+    } catch (e) { storageWarning(e); }
+  })();
+  return queueRestorePromise;
+}
 
 /* ============================== RECORDING ============================== */
 function pickMime() {
-  const c = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
-  return c.find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+  return ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm', 'video/mp4']
+    .find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
 }
-
-async function startRecording(resi) {
-  if (!ST.packer) { beep(220, 2); toast('Pilih packer atau scan badge packer dulu.', true); return; }
-  if (!ST.stream) { beep(220, 2); toast('Kamera belum menyala.', true); return; }
+function newRecordId() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+}
+function cameraIsReady() {
+  return ST.stream && ST.stream.getVideoTracks().some(t => t.readyState === 'live' && t.enabled && !t.muted) && camVideo.readyState >= 2 && camVideo.videoWidth > 0;
+}
+async function startRecording(resi, info) {
+  info = info || await run('lookupResi', resi);
+  validatePackingOrder(info);
+  if (!ST.packer) throw new Error('Masuk atau pilih packer terlebih dahulu.');
+  if (ST.current || ST.stopping) throw new Error('Selesaikan penyimpanan rekaman sebelumnya terlebih dahulu.');
+  if (!cameraIsReady()) throw new Error('Kamera belum siap. Nyalakan kamera dan pastikan gambar terlihat sebelum scan resi.');
+  if (videoStorageError) throw new Error(videoStorageError);
   const mime = pickMime();
-  if (!mime) { toast('Browser ini tidak mendukung perekaman video. Gunakan Google Chrome.', true); return; }
-
-  ST.chunks = [];
-  const rec = new MediaRecorder(cv.captureStream(15), { mimeType: mime, videoBitsPerSecond: CFG.bitrate });
-  rec.ondataavailable = e => { if (e.data && e.data.size) ST.chunks.push(e.data); };
-  rec.start(1000);
-  ST.recorder = rec;
-  ST.current = { resi: resi, packer: ST.packer, station: $('stationName').value.trim() || 'Meja 1', startAt: new Date(), mime: mime };
+  if (!mime || !cv.captureStream) throw new Error('Browser ini tidak mendukung perekaman video. Gunakan Google Chrome pada laptop.');
+  await restoreQueue();
+  if (videoStorageError) throw new Error(videoStorageError);
+  const id = newRecordId();
+  const cur = {
+    key: id, backendUrl: BACKEND.url, clientRecordId: id, resi: resi, packer: { ...ST.packer }, station: $('stationName').value.trim() || 'Meja 1',
+    startAt: new Date(), mime: mime.indexOf('mp4') >= 0 ? 'video/mp4' : 'video/webm', status: 'recording',
+    chunks: [], persistChain: Promise.resolve(), chunkIndex: 0, interrupted: false, interruptionReason: ''
+  };
+  try { await persistVideoJob(cur); } catch (e) { storageWarning(e); throw new Error(videoStorageError); }
+  if (!cameraIsReady()) { await deleteVideoJob(cur); throw new Error('Kamera terputus. Nyalakan kamera lalu scan ulang.'); }
+  let recorder;
+  try {
+    cur.captureStream = cv.captureStream(15);
+    recorder = new MediaRecorder(cur.captureStream, { mimeType: mime, videoBitsPerSecond: CFG.bitrate });
+    cur.stopPromise = new Promise(resolve => { cur.resolveStop = resolve; });
+    recorder.ondataavailable = e => {
+      if (!e.data || !e.data.size) return;
+      cur.chunks.push(e.data);
+      const index = cur.chunkIndex++;
+      cur.persistChain = cur.persistChain.then(() => persistVideoChunk(cur, e.data, index)).catch(error => {
+        cur.localFailure = true;
+        storageWarning(error);
+        stopRecording('Ruang penyimpanan lokal gagal. Unduh cadangan video segera.').catch(e => toast(errMsg(e), true));
+      });
+    };
+    recorder.onerror = event => { stopRecording('Perekaman gagal: ' + errMsg(event.error || 'kesalahan kamera')).catch(e => toast(errMsg(e), true)); };
+    recorder.onstop = () => {
+      if (!cur.stopRequested && !cur.interrupted) { cur.interrupted = true; cur.interruptionReason = 'Perekam berhenti tanpa konfirmasi. Periksa video sebelum dipakai sebagai bukti.'; }
+      finishRecording(cur).catch(e => { storageWarning(e); cur.resolveStop(); });
+    };
+    cur.cameraTrack = ST.stream.getVideoTracks()[0];
+    cur.onCameraEnded = () => { stopRecording('Kamera terputus saat packing. Video mungkin tidak lengkap.').catch(e => toast(errMsg(e), true)); };
+    cur.cameraTrack.addEventListener('ended', cur.onCameraEnded);
+    ST.current = cur; ST.recorder = recorder;
+    recorder.start(1000);
+  } catch (e) {
+    if (cur.captureStream) cur.captureStream.getTracks().forEach(t => t.stop());
+    if (cur.cameraTrack) cur.cameraTrack.removeEventListener('ended', cur.onCameraEnded);
+    ST.current = null; ST.recorder = null;
+    await deleteVideoJob(cur).catch(error => storageWarning(error));
+    throw e;
+  }
   beep(1000);
-
-  $('camFrame').classList.add('recording');
-  $('state').className = 'state rec';
-  $('stateLabel').textContent = 'Sedang merekam';
-  $('curResi').textContent = resi;
-  $('timer').hidden = false;
-  $('dupWarn').hidden = true;
-  $('btnStop').disabled = false;
-  $('orderBox').hidden = true;
-
+  $('camFrame').classList.add('recording'); $('state').className = 'state rec';
+  $('stateLabel').textContent = 'Sedang merekam — mulai packing sekarang';
+  $('curResi').textContent = resi; $('timer').hidden = false; $('btnStop').disabled = false;
+  renderOrder(info);
   clearInterval(ST.tickTimer);
   ST.tickTimer = setInterval(() => {
-    if (!ST.current) return;
-    const el = (Date.now() - ST.current.startAt) / 1000;
-    $('timer').textContent = fmtDur(el) + ' / maks ' + fmtDur(CFG.maxSec);
-    if (el >= CFG.maxSec) { toast('Batas durasi tercapai, rekaman disimpan otomatis.'); stopRecording(); }
+    if (ST.current !== cur || cur.stopRequested) return;
+    const elapsed = (Date.now() - cur.startAt) / 1000;
+    $('timer').textContent = fmtDur(elapsed) + ' / maks ' + fmtDur(CFG.maxSec);
+    if (!cameraIsReady()) stopRecording('Kamera tidak mengirim gambar. Periksa video dan rekam ulang bila perlu.').catch(e => toast(errMsg(e), true));
+    else if (elapsed >= CFG.maxSec) stopRecording('Batas durasi tercapai. Periksa kelengkapan video; lanjutkan rekaman dengan scan ulang bila packing belum selesai.').catch(e => toast(errMsg(e), true));
   }, 250);
-
-  const token = ST.current;
-  run('lookupResi', resi).then(info => { if (ST.current === token) renderOrder(info); }).catch(() => {});
 }
-
 function renderOrder(info) {
   const o = info.order;
+  $('dupWarn').hidden = true;
   if (info.history && info.history.length) {
-    const lastH = info.history[info.history.length - 1];
-    const d = new Date(lastH.startAt);
-    $('dupWarn').textContent = 'Resi ini sudah pernah direkam ' + info.history.length + '× (terakhir ' + fmtDate(d) + ' ' + fmtClock(d) + ' oleh ' + (lastH.packerName || '-') + '). Pastikan bukan paket ganda.';
-    $('dupWarn').hidden = false;
-    beep(440, 2);
+    const latest = info.history[info.history.length - 1], d = new Date(latest.startAt);
+    $('dupWarn').textContent = 'Resi ini sudah direkam ' + info.history.length + '× (terakhir ' + fmtDate(d) + ' ' + fmtClock(d) + ' oleh ' + (latest.packerName || '-') + '). Pastikan bukan paket ganda.';
+    $('dupWarn').hidden = false; beep(440, 2);
   }
-  if (!o) {
-    $('orderBox').hidden = false;
-    $('itemCount').textContent = '';
-    $('orderWho').textContent = 'Data pesanan untuk resi ini belum ada di sistem. Rekaman tetap berjalan.';
-    $('orderItems').replaceChildren();
-    return;
-  }
-  const total = o.items.reduce((s, it) => s + (Number(it.qty) || 0), 0);
   $('orderBox').hidden = false;
-  $('itemCount').textContent = total + ' pcs';
-  $('orderWho').textContent = 'Pesanan ' + o.orderSn + (o.buyer ? ' · pembeli ' + o.buyer : '');
+  $('itemCount').textContent = o.items.reduce((s, it) => s + (Number(it.qty) || 0), 0) + ' pcs';
+  const picking = info.picking;
+  $('orderWho').textContent = 'Pesanan ' + o.orderSn + (o.buyer ? ' · pembeli ' + o.buyer : '') +
+    (picking && picking.complete ? ' · Picking selesai oleh ' + picking.pickerName : ' · Belum dikonfirmasi picker');
   $('orderItems').replaceChildren(...o.items.map(it => h('li', { onclick: e => e.currentTarget.classList.toggle('done') },
     h('span', { class: 'qty' }, it.qty + '×'),
     h('span', { class: 'nm' }, it.name, (it.variation || it.sku) ? h('small', null, [it.variation, it.sku].filter(Boolean).join(' / ')) : null))));
 }
-
-function stopRecording() {
-  if (!ST.current || !ST.recorder) return Promise.resolve();
+function stopRecording(reason) {
   if (ST.stopping) return ST.stopping;
-  const cur = ST.current, rec = ST.recorder;
-  ST.stopping = new Promise(resolve => {
-    rec.onstop = () => {
-      const base = cur.mime.indexOf('mp4') >= 0 ? 'video/mp4' : 'video/webm';
-      const blob = new Blob(ST.chunks, { type: base });
-      ST.chunks = [];
-      const job = {
-        key: Math.random().toString(36).slice(2), resi: cur.resi, packer: cur.packer, station: cur.station,
-        startAt: cur.startAt, endAt: new Date(), mime: base, blob: blob, status: 'antre', progress: 0, error: ''
-      };
-      ST.queue.unshift(job);
-      ST.queue = ST.queue.slice(0, 30);
-      renderQueue();
-      processQueue();
-      resolve();
-    };
-    rec.stop();
-  });
+  const cur = ST.current, recorder = ST.recorder;
+  if (!cur || !recorder) return Promise.resolve();
+  if (reason) { cur.interrupted = true; cur.interruptionReason = reason; toast(reason, true); }
+  cur.stopRequested = true;
+  ST.stopping = cur.stopPromise;
   clearInterval(ST.tickTimer);
-  ST.current = null;
-  ST.recorder = null;
-  beep(700, 2);
-  $('camFrame').classList.remove('recording');
-  $('state').className = 'state';
-  $('stateLabel').textContent = 'Tersimpan di antrean upload. Scan resi berikutnya.';
-  $('timer').hidden = true;
-  $('btnStop').disabled = true;
-  return ST.stopping.then(() => { ST.stopping = null; });
+  $('btnStop').disabled = true; $('stateLabel').textContent = 'Menyelesaikan rekaman dan menyimpan salinan lokal…';
+  try {
+    if (recorder.state !== 'inactive') recorder.stop();
+    else finishRecording(cur).catch(e => { storageWarning(e); cur.resolveStop(); });
+  } catch (e) {
+    cur.interrupted = true; cur.interruptionReason = 'Perekam gagal dihentikan: ' + errMsg(e);
+    finishRecording(cur).catch(error => { storageWarning(error); cur.resolveStop(); });
+  }
+  return cur.stopPromise;
+}
+async function finishRecording(cur) {
+  if (cur.finishing) return;
+  cur.finishing = true;
+  clearInterval(ST.tickTimer);
+  cur.endAt = new Date();
+  cur.blob = new Blob(cur.chunks, { type: cur.mime });
+  cur.status = cur.interrupted || !cur.blob.size ? 'gagal' : 'antre';
+  cur.error = cur.interruptionReason || (!cur.blob.size ? 'Rekaman kosong. Periksa kamera dan rekam ulang paket.' : '');
+  cur.progress = 0;
+  if (cur.captureStream) cur.captureStream.getTracks().forEach(t => t.stop());
+  if (cur.cameraTrack) cur.cameraTrack.removeEventListener('ended', cur.onCameraEnded);
+  ST.queue.unshift(cur); renderQueue();
+  try {
+    await cur.persistChain;
+    if (cur.localFailure) throw new Error('Sebagian potongan rekaman tidak tersimpan di perangkat');
+    await persistVideoJob(cur);
+  } catch (e) {
+    cur.localFailure = true; cur.interrupted = true; cur.status = 'gagal';
+    cur.interruptionReason = cur.interruptionReason || 'Penyimpanan lokal gagal. Video ini hanya tersedia selama tab tetap terbuka; unduh cadangan segera.';
+    cur.error = cur.interruptionReason;
+    storageWarning(e);
+  } finally {
+    cur.chunks = [];
+    if (ST.current === cur) { ST.current = null; ST.recorder = null; }
+    ST.stopping = null;
+    $('camFrame').classList.remove('recording'); $('state').className = 'state'; $('timer').hidden = true; $('btnStop').disabled = true;
+    $('stateLabel').textContent = cur.status === 'antre' ? 'Salinan lokal siap; menunggu konfirmasi upload ke Drive. Scan resi berikutnya.' : cur.error;
+    renderQueue(); beep(700, 2); cur.resolveStop();
+  }
+  processQueue();
+}
+function hasUnsavedRecording() { return !!(ST.current || ST.stopping || ST.queue.some(j => j.status !== 'tersimpan')); }
+function releaseCamera() {
+  if (ST.current || ST.stopping) return false;
+  if (ST.stream) ST.stream.getTracks().forEach(t => t.stop());
+  ST.stream = null; camVideo.srcObject = null;
+  return true;
 }
 
 /* ============================== UPLOAD QUEUE ============================== */
-const CHUNK = 2 * 1024 * 1024; // kelipatan 256 KB
+const CHUNK = 2 * 1024 * 1024; // Drive resumable chunks must be a multiple of 256 KiB.
 let uploading = false;
-
 function blobToB64(blob) {
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = () => res(String(r.result).split(',')[1] || '');
-    r.onerror = () => rej(new Error('Gagal membaca video'));
-    r.readAsDataURL(blob);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+    reader.onerror = () => reject(new Error('Gagal membaca video lokal'));
+    reader.readAsDataURL(blob);
   });
 }
-
+function mayUploadJob(job) {
+  if (job.backendUrl && job.backendUrl !== BACKEND.url) return false;
+  return ROLE.value === 'admin' || (ROLE.value === 'user' && ST.packer && ST.packer.id === job.packer.id);
+}
 async function processQueue() {
   if (uploading) return;
   uploading = true;
   try {
     let job;
-    while ((job = ST.queue.slice().reverse().find(j => j.status === 'antre'))) {
-      await uploadJob(job);
-    }
-  } finally {
-    uploading = false;
-  }
+    while ((job = ST.queue.slice().reverse().find(j => j.status === 'antre' && mayUploadJob(j)))) await uploadJob(job);
+  } catch (e) { toast(errMsg(e), true); }
+  finally { uploading = false; }
 }
-
+async function persistUploadProgress(job) {
+  if (job.localFailure) return;
+  try { await persistVideoJob(job); }
+  catch (e) { job.localFailure = true; storageWarning(e); }
+}
 async function uploadJob(job) {
   job.status = 'mengunggah'; job.error = ''; renderQueue();
   try {
+    if (!job.blob || !job.blob.size) throw new Error('Video kosong. Rekam ulang paket ini.');
     const size = job.blob.size;
     if (!job.uploadId) {
-      const r = await run('startVideoUpload', { resi: job.resi, packerName: job.packer.name, startAt: job.startAt.toISOString(), mime: job.mime, size: size });
-      job.uploadId = r.uploadId;
-      job.offset = 0;
+      const r = await run('startVideoUpload', {
+        resi: job.resi, packerId: job.packer.id, packerName: job.packer.name, startAt: job.startAt.toISOString(),
+        mime: job.mime, size: size, clientRecordId: job.clientRecordId, interrupted: !!job.interrupted,
+        interruptionReason: job.interruptionReason || ''
+      });
+      if (!r || !r.uploadId) throw new Error('Backend tidak memberikan ID upload.');
+      job.uploadId = r.uploadId; job.offset = Number(r.next || 0); job.uploaded = !!r.done;
+      if (!Number.isInteger(job.offset) || job.offset < 0 || job.offset > size) throw new Error('Posisi upload dari server tidak valid.');
+      await persistUploadProgress(job);
     }
-    let done = false;
-    while (!done) {
-      const part = job.blob.slice(job.offset, Math.min(job.offset + CHUNK, size));
-      const r = await run('uploadVideoChunk', job.uploadId, await blobToB64(part), job.offset);
-      if (r.done) done = true;
-      else job.offset = r.next;
-      job.progress = done ? 1 : job.offset / size;
-      renderQueue();
+    while (!job.uploaded) {
+      const start = Number(job.offset || 0), end = Math.min(start + CHUNK, size);
+      if (!Number.isInteger(start) || start < 0 || start >= size) throw new Error('Posisi upload tidak valid. Coba upload ulang.');
+      const result = await run('uploadVideoChunk', job.uploadId, await blobToB64(job.blob.slice(start, end)), start);
+      if (result && result.done === true) { job.uploaded = true; job.offset = size; }
+      else {
+        const next = result && Number(result.next);
+        if (!Number.isInteger(next) || next <= start || next > size || next > end) throw new Error('Upload tidak mengalami kemajuan. Coba lagi setelah memeriksa koneksi.');
+        job.offset = next;
+      }
+      job.progress = job.offset / size; await persistUploadProgress(job); renderQueue();
     }
-    await run('saveRecord', {
-      uploadId: job.uploadId, resi: job.resi, packerId: job.packer.id, packerName: job.packer.name,
-      station: job.station, startAt: job.startAt.toISOString(), endAt: job.endAt.toISOString()
+    const saved = await run('saveRecord', {
+      uploadId: job.uploadId, clientRecordId: job.clientRecordId, resi: job.resi, packerId: job.packer.id,
+      packerName: job.packer.name, station: job.station, startAt: job.startAt.toISOString(), endAt: job.endAt.toISOString(),
+      interrupted: !!job.interrupted, interruptionReason: job.interruptionReason || ''
     });
-    job.status = 'tersimpan'; job.blob = null;
+    if (!saved || !saved.recordId) throw new Error('Drive sudah menerima video, tetapi pencatatan bukti belum dikonfirmasi. Tekan Coba lagi.');
+    job.recordId = saved.recordId; job.status = 'tersimpan'; job.progress = 1;
+    // Keep the blob until Drive AND the Sheets record are confirmed. A delete
+    // failure is harmless: clientRecordId makes recovery/retries idempotent.
+    try { await deleteVideoJob(job); } catch (e) { storageWarning(e); }
+    job.blob = null;
   } catch (e) {
     job.status = 'gagal'; job.error = errMsg(e);
-    if (/kedaluwarsa/i.test(job.error)) { job.uploadId = null; job.offset = 0; }
+    if (/kedaluwarsa|expired|upload.+(?:404|410)|posisi upload|tidak mengalami kemajuan/i.test(job.error)) {
+      job.uploadId = null; job.offset = 0; job.uploaded = false;
+    }
+    await persistUploadProgress(job);
   }
   renderQueue();
 }
-
-function retryJob(job) { job.status = 'antre'; renderQueue(); processQueue(); }
-function saveLocal(job) {
-  const a = h('a', { href: URL.createObjectURL(job.blob), download: job.resi + '_' + job.startAt.getTime() + (job.mime === 'video/mp4' ? '.mp4' : '.webm') });
-  document.body.append(a); a.click(); a.remove();
+function retryJob(job) {
+  if (!mayUploadJob(job)) { toast('Masuk sebagai ' + job.packer.name + ' atau admin untuk mengunggah rekaman ini.', true); return; }
+  if (!job.blob || !job.blob.size) { toast('Tidak ada video untuk diunggah. Rekam ulang paket ini.', true); return; }
+  if (job.status === 'mengunggah' || job.status === 'tersimpan') return;
+  job.status = 'antre'; job.error = ''; renderQueue(); processQueue();
 }
-
+function saveLocal(job) {
+  if (!job.blob || !job.blob.size) { toast('Tidak ada potongan video untuk diunduh.', true); return; }
+  const url = URL.createObjectURL(job.blob);
+  const a = h('a', { href: url, download: job.resi + '_' + job.startAt.getTime() + (job.interrupted ? '_TERPUTUS' : '') + (job.mime === 'video/mp4' ? '.mp4' : '.webm') });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+}
 function renderQueue() {
   const ul = $('queue');
-  if (!ST.queue.length) { ul.replaceChildren(h('li', { class: 'empty' }, 'Belum ada rekaman sejak halaman dibuka.')); return; }
-  ul.replaceChildren(...ST.queue.map(j => {
-    const cls = j.status === 'tersimpan' ? 'ok' : j.status === 'gagal' ? 'fail' : 'busy';
-    const label = j.status === 'mengunggah' ? 'Mengunggah ' + Math.round(j.progress * 100) + '%' :
-                  j.status === 'antre' ? 'Menunggu upload' :
-                  j.status === 'tersimpan' ? 'Tersimpan' : 'Gagal: ' + j.error;
+  if (!ST.queue.length) { ul.replaceChildren(h('li', { class: 'empty' }, 'Belum ada rekaman. Video yang belum terunggah dipulihkan dari perangkat ini.')); return; }
+  ul.replaceChildren(...ST.queue.map(job => {
+    const cls = job.status === 'tersimpan' ? (job.interrupted ? 'fail' : 'ok') : job.status === 'gagal' ? 'fail' : 'busy';
+    const label = job.status === 'mengunggah' ? (job.uploaded ? 'Mencatat bukti di Sheets…' : 'Mengunggah ' + Math.round(job.progress * 100) + '%') :
+      job.status === 'antre' ? 'Salinan lokal · menunggu upload' :
+      job.status === 'tersimpan' ? (job.interrupted ? 'Video terputus tersimpan di Drive · perlu tinjauan admin' : 'Tersimpan di Drive dan tercatat') : 'Belum tersimpan di Drive: ' + job.error;
     return h('li', { class: cls },
-      h('span', { class: 'q-resi' }, j.resi),
-      h('span', { class: 'q-meta' }, fmtClock(j.startAt) + ' · ' + fmtDur((j.endAt - j.startAt) / 1000) + ' · ' + j.packer.name + ' · ' + label),
-      j.status === 'gagal' ? h('span', { class: 'q-actions' },
-        h('button', { class: 'btn small', type: 'button', onclick: () => retryJob(j) }, 'Coba lagi'),
-        h('button', { class: 'btn small', type: 'button', onclick: () => saveLocal(j) }, 'Simpan ke komputer')) : null,
-      j.status === 'mengunggah' ? h('div', { class: 'bar-prog' }, h('i', { style: 'width:' + Math.round(j.progress * 100) + '%' })) : null);
+      h('span', { class: 'q-resi' }, job.resi),
+      h('span', { class: 'q-meta' }, fmtClock(job.startAt) + ' · ' + fmtDur((job.endAt - job.startAt) / 1000) + ' · ' + job.packer.name + ' · ' + label),
+      job.blob && job.blob.size && job.status !== 'tersimpan' ? h('span', { class: 'q-actions' },
+        job.status === 'gagal' ? h('button', { class: 'btn small', type: 'button', onclick: () => retryJob(job) }, job.interrupted ? 'Unggah video terputus' : 'Coba lagi') : null,
+        h('button', { class: 'btn small', type: 'button', onclick: () => saveLocal(job) }, 'Unduh cadangan')) : null,
+      job.status === 'mengunggah' ? h('div', { class: 'bar-prog' }, h('i', { style: 'width:' + Math.round(job.progress * 100) + '%' })) : null);
   }));
 }
-
+window.addEventListener('online', () => processQueue());
 window.addEventListener('beforeunload', e => {
-  if (ST.current || ST.queue.some(j => j.status !== 'tersimpan')) { e.preventDefault(); e.returnValue = ''; }
+  if (hasUnsavedRecording()) { e.preventDefault(); e.returnValue = ''; }
+});
+window.addEventListener('pagehide', () => {
+  // Best effort final flush; earlier one-second chunks already exist in IDB.
+  if (ST.current) stopRecording('Halaman ditutup saat merekam. Periksa kelengkapan video.').catch(() => {});
+  else releaseCamera();
 });
 
 /* ============================== ADMIN ============================== */
@@ -971,7 +1223,7 @@ try { AD.token = sessionStorage.getItem('pr_admin') || null; } catch (e) {}
 function initAdmin() {
   $('login').hidden = !!AD.token;
   $('adminApp').hidden = !AD.token;
-  if (AD.token && !AD.inited) { AD.inited = true; $('recDate').value = todayStr(); showTab('rec'); }
+  if (AD.token && !AD.inited) { AD.inited = true; $('recDate').value = todayStr(); showTab('orders'); }
   if (!AD.token) setTimeout(() => $('pin').focus(), 50);
 }
 async function adminCall(fn, ...args) {
@@ -998,6 +1250,7 @@ async function doLogin() {
 $('btnLogin').addEventListener('click', doLogin);
 $('pin').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 function logout() {
+  if (ST.current || ST.stopping) { toast('Selesaikan rekaman sebelum mengganti pengguna.', true); return; }
   AD.token = null; AD.inited = false;
   try { sessionStorage.removeItem('pr_admin'); } catch (e) {}
   SS.del('role'); ROLE.value = '';
@@ -1016,6 +1269,7 @@ function showTab(t) {
   document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== t; });
   if (t === 'rec') loadRecords();
   if (t === 'packers') loadPackers();
+  if (t === 'pickers') loadPickers();
   if (t === 'orders' || t === 'settings') loadSettings();
   if (t === 'search') setTimeout(() => $('searchQ').focus(), 50);
 }
@@ -1050,7 +1304,7 @@ function renderRecords() {
     kpi(packers.size, 'packer aktif'),
     kpi(all.length ? fmtDur(totalDur / all.length) : '—', 'rata-rata durasi'),
     kpi(mb.toFixed(0) + ' MB', 'video tersimpan'),
-    kpi(failed, 'tanpa video'));
+    kpi(failed, 'rekaman perlu ditinjau'));
 
   const per = {};
   all.forEach(r => { const k = r.packerName || '-'; per[k] = per[k] || { n: 0, d: 0 }; per[k].n++; per[k].d += r.durationSec; });
@@ -1066,7 +1320,7 @@ function renderRecords() {
       h('td', null, r.packerName),
       h('td', null, fmtDur(r.durationSec)),
       h('td', null, r.station),
-      h('td', null, h('span', { class: 'pill ' + (r.status === 'OK' ? 'ok' : 'bad') }, r.status === 'OK' ? 'Ada' : 'Tidak ada')),
+      h('td', null, h('span', { class: 'pill ' + (r.status === 'OK' ? 'ok' : 'bad') }, r.status === 'OK' ? 'Ada' : (r.fileId ? 'Terputus · tinjau' : 'Tidak ada'))),
       h('td', null, h('button', { class: 'btn small', type: 'button', onclick: () => openRecordDetail(r) }, 'Lihat')));
   }) : [h('tr', null, h('td', { colspan: 7, class: 'empty' }, all.length ? 'Tidak ada yang cocok dengan saringan.' : 'Belum ada rekaman di tanggal ini.'))]));
 }
@@ -1213,6 +1467,43 @@ async function refreshStationPackers() {
   } catch (e) {}
 }
 
+/* ---- Akun picker: kredensial divalidasi oleh backend ---- */
+const PI = { list: [], edit: null, busy: false };
+async function loadPickers() {
+  $('piRows').replaceChildren(h('tr', null, h('td', { colspan: 4 }, 'Memuat akun…')));
+  try { PI.list = await adminCall('adminGetPickers'); renderPickers(); }
+  catch (e) { $('piRows').replaceChildren(h('tr', null, h('td', { colspan: 4 }, errMsg(e)))); }
+}
+function renderPickers() {
+  $('piRows').replaceChildren(...(PI.list.length ? PI.list.map(p => h('tr', null,
+    h('td', null, p.name), h('td', { class: 'resi-cell' }, p.code),
+    h('td', null, h('span', { class: 'pill ' + (p.active ? 'ok' : 'off') }, p.active ? 'Aktif' : 'Nonaktif')),
+    h('td', null,
+      h('button', { class: 'btn small', type: 'button', onclick: () => {
+        PI.edit = p; $('piName').value = p.name; $('piCode').value = p.code; $('piPin').value = '';
+        $('piPin').placeholder = 'Kosongkan jika tidak diganti'; $('pickerFormTitle').textContent = 'Ubah akun picker';
+        $('btnPiCancel').hidden = false; $('piName').focus();
+      } }, 'Ubah'), ' ',
+      h('button', { class: 'btn small', type: 'button', onclick: () => savePicker({ ...p, active: !p.active }) }, p.active ? 'Nonaktifkan' : 'Aktifkan'))))
+    : [h('tr', null, h('td', { colspan: 4, class: 'empty' }, 'Belum ada akun picker. Buat akun untuk tim pengambilan barang.'))]));
+}
+function resetPickerForm() {
+  PI.edit = null; $('piName').value = ''; $('piCode').value = ''; $('piPin').value = ''; $('piPin').placeholder = '';
+  $('pickerFormTitle').textContent = 'Tambah akun picker'; $('btnPiCancel').hidden = true;
+}
+async function savePicker(data, form) {
+  if (PI.busy) return;
+  PI.busy = true; $('btnPiSave').disabled = true;
+  try {
+    PI.list = await adminCall('adminSavePicker', data);
+    if (form) resetPickerForm();
+    renderPickers(); toast('Akun picker disimpan.');
+  } catch (e) { toast(errMsg(e), true); }
+  finally { PI.busy = false; $('btnPiSave').disabled = false; }
+}
+$('btnPiSave').addEventListener('click', () => savePicker({ ...(PI.edit || {}), name: $('piName').value.trim(), code: $('piCode').value.trim(), pin: $('piPin').value }, true));
+$('btnPiCancel').addEventListener('click', resetPickerForm);
+
 /* ---- Import pesanan ---- */
 const COLS = {
   resi: ['noresi', 'nomorresi', 'resi', 'trackingnumber', 'trackingno', 'awb', 'noawb'],
@@ -1222,7 +1513,7 @@ const COLS = {
   status: ['statuspesanan', 'orderstatus', 'status'],
   item: ['namaproduk', 'productname', 'itemname', 'produk'],
   variation: ['namavariasi', 'variationname', 'variasi', 'variation'],
-  sku: ['nomorreferensisku', 'skureferenceno', 'skureferencenumber', 'skuinduk', 'parentsku', 'sku'],
+  sku: ['nomorreferensiskureferensi', 'nomorreferensisku', 'skureferenceno', 'skureferencenumber', 'skuinduk', 'parentsku', 'sku'],
   qty: ['jumlah', 'quantity', 'qty', 'kuantitas']
 };
 const LABELS = { resi: 'No. resi', orderSn: 'No. pesanan', buyer: 'Username pembeli', recipient: 'Nama penerima', status: 'Status', item: 'Nama produk', variation: 'Variasi', sku: 'SKU', qty: 'Jumlah' };
@@ -1240,34 +1531,70 @@ function detectCols(headers) {
   return out;
 }
 
-/** Membaca file ekspor Shopee (xlsx/xls/csv) dan mengelompokkan barang per nomor resi. */
-async function parseShopeeFile(f) {
-  if (typeof XLSX === 'undefined') throw new Error('Pembaca Excel gagal dimuat. Periksa koneksi internet lalu muat ulang halaman.');
-  const buf = await f.arrayBuffer();
-  const wb = XLSX.read(buf, { type: 'array' });
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: false });
-  if (!rows.length) throw new Error('File kosong.');
-  const headers = Object.keys(rows[0]);
-  const col = detectCols(headers);
-  if (!col.resi) throw new Error('Kolom nomor resi tidak ditemukan. Kolom yang terbaca: ' + headers.slice(0, 12).join(', ') + '. Pastikan file berisi kolom "No. Resi".');
+function parseCsv(text) {
+  text = text.replace(/^\uFEFF/, '');
+  const firstLine = text.split(/\r?\n/, 1)[0];
+  const delimiter = (firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length ? ';' : ',';
+  const rows = []; let row = [], field = '', quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === '"') {
+      if (quoted && text[i + 1] === '"') { field += '"'; i++; }
+      else if (quoted || !field) quoted = !quoted;
+      else throw new Error('Format CSV tidak valid: tanda kutip di tengah nilai.');
+    } else if (c === delimiter && !quoted) { row.push(field); field = ''; }
+    else if ((c === '\n' || c === '\r') && !quoted) {
+      if (c === '\r' && text[i + 1] === '\n') i++;
+      row.push(field); if (row.some(v => v.trim())) rows.push(row); row = []; field = '';
+    } else field += c;
+  }
+  if (quoted) throw new Error('Format CSV tidak valid: tanda kutip belum ditutup.');
+  row.push(field); if (row.some(v => v.trim())) rows.push(row);
+  return rows;
+}
 
-  const byResi = new Map();
-  rows.forEach(r => {
-    const resi = cleanCode(r[col.resi]);
-    if (!/^[A-Z0-9\-_.]{5,64}$/.test(resi)) return;
+function groupShopeeRows(table) {
+  if (table.length < 2) throw new Error('File kosong atau tidak berisi pesanan.');
+  const headers = table[0].map(x => String(x || '').trim());
+  const col = detectCols(headers);
+  const missing = ['resi', 'orderSn', 'item', 'qty'].filter(k => !col[k]);
+  if (missing.length) throw new Error('Kolom wajib belum ditemukan: ' + missing.map(k => LABELS[k]).join(', ') + '. Gunakan ekspor detail pesanan Shopee.');
+  const at = Object.fromEntries(Object.entries(col).map(([k, v]) => [k, headers.indexOf(v)]));
+  const byResi = new Map(); let skipped = 0;
+  table.slice(1).forEach((row, i) => {
+    if (!row.some(v => String(v || '').trim())) return;
+    const value = k => at[k] === undefined ? '' : String(row[at[k]] ?? '').trim();
+    const resi = cleanCode(value('resi'));
+    if (!/^[A-Z0-9\-_.]{5,64}$/.test(resi)) { skipped++; return; }
+    const item = value('item'), sn = value('orderSn'), rawQty = value('qty');
+    if (!item || !sn) throw new Error('Baris ' + (i + 2) + ': nomor pesanan dan nama barang wajib diisi.');
+    if (!/^(?:\d+|\d{1,3}(?:[.,]\d{3})+)$/.test(rawQty)) throw new Error('Baris ' + (i + 2) + ': jumlah barang harus bilangan bulat positif.');
+    const qty = Number(rawQty.replace(/[.,]/g, ''));
+    if (!Number.isSafeInteger(qty) || qty < 1 || qty > 100000) throw new Error('Baris ' + (i + 2) + ': jumlah barang tidak valid.');
     let o = byResi.get(resi);
     if (!o) {
-      o = { resi: resi, orderSn: '', buyer: '', recipient: '', status: '', items: [] };
+      o = { resi, orderSn: sn, buyer: value('buyer'), recipient: value('recipient'), status: value('status'), items: [] };
       byResi.set(resi, o);
-    }
-    if (!o.orderSn && col.orderSn) o.orderSn = String(r[col.orderSn] || '').trim();
-    if (!o.buyer && col.buyer) o.buyer = r[col.buyer] || '';
-    if (!o.recipient && col.recipient) o.recipient = r[col.recipient] || '';
-    if (!o.status && col.status) o.status = r[col.status] || '';
-    if (col.item && r[col.item]) o.items.push({ name: r[col.item], variation: col.variation ? r[col.variation] : '', sku: col.sku ? r[col.sku] : '', qty: Number(String(r[col.qty] || '1').replace(/[^\d]/g, '')) || 1 });
+    } else if (o.orderSn !== sn) throw new Error('Resi ' + resi + ' dipakai oleh nomor pesanan yang berbeda. Periksa file.');
+    if (o.items.length >= 100) throw new Error('Resi ' + resi + ' melebihi 100 baris barang. Pisahkan paket terlebih dahulu.');
+    o.items.push({ name: item, variation: value('variation'), sku: value('sku'), qty });
   });
-  return { rowCount: rows.length, col: col, orders: Array.from(byResi.values()) };
+  if (!byResi.size) throw new Error('Tidak ada resi valid. Atur pengiriman di Shopee terlebih dahulu, lalu ekspor kembali.');
+  return { rowCount: table.length - 1, skipped, col, orders: [...byResi.values()] };
+}
+
+/** CSV works without a CDN; Excel uses the pinned SheetJS reader. */
+async function parseShopeeFile(f) {
+  if (f.size > 20 * 1024 * 1024) throw new Error('Ukuran file maksimal 20 MB. Pecah ekspor menjadi beberapa file.');
+  let table;
+  if (/\.csv$/i.test(f.name)) table = parseCsv(await f.text());
+  else {
+    if (!/\.(xlsx|xls)$/i.test(f.name)) throw new Error('Gunakan file .xlsx, .xls, atau .csv.');
+    if (typeof XLSX === 'undefined') throw new Error('Pembaca Excel belum dimuat. Muat ulang atau gunakan ekspor CSV.');
+    const wb = XLSX.read(await f.arrayBuffer(), { type: 'array' });
+    table = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '', raw: false });
+  }
+  return groupShopeeRows(table);
 }
 
 $('importFile').addEventListener('change', async e => {
@@ -1276,9 +1603,9 @@ $('importFile').addEventListener('change', async e => {
   const box = $('importPreview');
   box.replaceChildren(h('p', { class: 'note' }, 'Membaca file…'));
   try {
-    const { rowCount, col, orders } = await parseShopeeFile(f);
+    const { rowCount, col, orders, skipped } = await parseShopeeFile(f);
     box.replaceChildren(h('div', { class: 'stack' },
-      h('div', { class: 'status-line' }, rowCount + ' baris dibaca, ' + orders.length + ' resi unik siap diimpor. Baris tanpa resi dilewati.'),
+      h('div', { class: 'status-line' }, rowCount + ' baris dibaca, ' + orders.length + ' resi unik siap diimpor. ' + skipped + ' baris tanpa resi valid dilewati.'),
       h('div', { class: 'map-list' }, Object.keys(LABELS).map(k => [h('span', { class: 'muted' }, LABELS[k]), h('span', null, col[k] ? '“' + col[k] + '”' : 'tidak ditemukan')])),
       h('div', { class: 'row', style: 'margin:0' }, h('button', { class: 'btn primary', type: 'button', onclick: ev => importOrders(orders, ev.currentTarget) }, 'Impor ' + orders.length + ' pesanan'))));
   } catch (err) {
@@ -1356,7 +1683,7 @@ function renderOrders() {
       h('td', { class: 'sum' }, first ? first.qty + '× ' + first.name : '—',
         o.items.length > 1 ? h('small', null, '+ ' + (o.items.length - 1) + ' barang lain') : null),
       h('td', { class: 'qty-cell' }, o.totalQty),
-      h('td', null, p ? h('span', { class: 'pill ok' }, 'Sudah direkam' + (p.count > 1 ? ' ×' + p.count : '')) : h('span', { class: 'pill warn' }, 'Belum direkam')),
+      h('td', null, o.picking ? h('div', { class: 'pill ok', style: 'margin-bottom:4px' }, '✓ Dicek ' + o.picking.pickerName) : h('div', { class: 'muted', style: 'font-size:12px' }, 'Belum dicek picker'), p ? h('span', { class: 'pill ok' }, 'Sudah direkam' + (p.count > 1 ? ' ×' + p.count : '')) : h('span', { class: 'pill warn' }, 'Belum direkam')),
       h('td', null, h('button', { class: 'btn small', type: 'button' }, 'Lihat')));
   }) : [h('tr', null, h('td', { colspan: 6, class: 'empty' },
     OR.total === 0 ? 'Belum ada pesanan. Letakkan file ekspor Shopee di kotak atas.' : 'Tidak ada pesanan yang cocok.'))]));
@@ -1407,7 +1734,7 @@ async function handleOrderFile(f) {
   OR.busy = true;
   try {
     say('Membaca ' + f.name + '…');
-    const { rowCount, col, orders } = await parseShopeeFile(f);
+    const { rowCount, col, orders, skipped } = await parseShopeeFile(f);
     if (!orders.length) throw new Error('Tidak ada nomor resi yang valid di file ini. Resi biasanya baru terisi setelah pesanan diatur pengirimannya di Shopee.');
     let saved = 0;
     for (let i = 0; i < orders.length; i += 250) {
@@ -1416,7 +1743,7 @@ async function handleOrderFile(f) {
       saved += r.saved;
     }
     const missing = ['buyer', 'item'].filter(k => !col[k]).map(k => LABELS[k]);
-    say(rowCount + ' baris dibaca, ' + orders.length + ' resi tersimpan.' + (missing.length ? ' Peringatan: kolom ' + missing.join(' dan ') + ' tidak ditemukan di file.' : ''), missing.length > 0);
+    say(rowCount + ' baris dibaca, ' + orders.length + ' resi tersimpan. ' + skipped + ' baris tanpa resi valid dilewati.' + (missing.length ? ' Peringatan: kolom ' + missing.join(' dan ') + ' tidak ditemukan di file.' : ''), missing.length > 0);
     OR.fileResi = orders.length <= 2000 ? orders.map(o => o.resi) : null;
     OR.fileName = f.name; OR.q = ''; $('ordQ').value = ''; OR.filter = 'all'; syncSeg();
     await loadOrders();
@@ -1508,6 +1835,7 @@ function openConnGate(closable) {
   setTimeout(() => $('connUrl').focus(), 50);
 }
 $('btnConnSettings').addEventListener('click', () => openConnGate(true));
+$('loginConnection').addEventListener('click', () => openConnGate(true));
 $('connClose').addEventListener('click', () => { $('connGate').hidden = true; focusScan(); });
 $('connSave').addEventListener('click', async () => {
   const url = $('connUrl').value.trim();
@@ -1518,14 +1846,19 @@ $('connSave').addEventListener('click', async () => {
     return;
   }
   if (!key) { $('connErr').textContent = 'Kunci stasiun wajib diisi.'; $('connErr').hidden = false; return; }
+  const previous = { ...BACKEND };
+  if (ST.current || ST.stopping || ST.queue.some(j => j.status !== 'tersimpan')) { $('connErr').textContent = 'Selesaikan upload sebelum mengubah sambungan.'; $('connErr').hidden = false; return; }
   BACKEND.url = url; BACKEND.key = key;
-  S.set('backendUrl', url); S.set('backendKey', key);
   $('connSave').disabled = true; $('connSave').textContent = 'Memeriksa…';
   try {
     await run('getBootstrap');
+    S.set('backendUrl', url); S.set('backendKey', key);
+    updatePickerLinks();
+    if (previous.url !== url || previous.key !== key) { AD.token = null; AD.inited = false; SS.del('admin'); SS.del('role'); }
     $('connGate').hidden = true;
     boot();
   } catch (e) {
+    BACKEND.url = previous.url; BACKEND.key = previous.key;
     $('connErr').textContent = errMsg(e) === 'BACKEND_NOT_SET' ? 'Isi URL dan kunci terlebih dahulu.' : 'Gagal terhubung: ' + errMsg(e);
     $('connErr').hidden = false;
   }
@@ -1537,7 +1870,7 @@ function applyRoleUI(role) {
   document.querySelector('.modes button[data-mode="admin"]').hidden = role !== 'admin';
   $('drop').hidden = role !== 'admin';
   $('roleBadge').hidden = !role;
-  $('roleBadge').textContent = role === 'admin' ? 'Administrator' : (role === 'user' ? 'Login' : '');
+  $('roleBadge').textContent = role === 'admin' ? 'Administrator' : (role === 'user' ? 'Packer' : '');
   $('roleBadge').classList.toggle('admin', role === 'admin');
   $('btnLogoutRole').hidden = !role;
   $('btnConnSettings').hidden = role !== 'admin';
@@ -1558,6 +1891,8 @@ function pickRole(role) {
   applyRoleUI(role);
   $('loginGate').hidden = true;
   $('appShell').hidden = false;
+  setMode(role === 'admin' ? 'orders' : 'station');
+  processQueue();
   focusScan();
 }
 $('btnPickUser').addEventListener('click', () => pickRole('user'));
@@ -1612,11 +1947,13 @@ async function boot() {
   } catch (e) {
     toast(errMsg(e), true);
   }
+  await restoreQueue();
   renderQueue();
   const savedRole = SS.get('role', '');
   if (savedRole === 'admin' && AD.token) { ROLE.value = 'admin'; applyRoleUI('admin'); $('appShell').hidden = false; focusScan(); }
   else if (savedRole === 'user') { ROLE.value = 'user'; applyRoleUI('user'); $('appShell').hidden = false; focusScan(); }
   else showLoginGate();
+  processQueue();
 }
 
 if (BACKEND.url && BACKEND.key) boot(); else openConnGate(false);

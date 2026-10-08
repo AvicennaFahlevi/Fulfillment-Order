@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#163d35">
+  <title>Picker · Meirista Fulfillment</title>
+  <style>
+    :root{--ink:#183c34;--muted:#66766e;--paper:#f5f5ed;--white:#fff;--line:#dce4dc;--accent:#e67a50;--green:#237258;--pale:#e8f1e9;--red:#ad4034;--shadow:0 14px 42px #193c3408}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}button,a,input{-webkit-tap-highlight-color:transparent}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.55}[hidden]{display:none!important}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #df906a;outline-offset:3px}a{color:inherit}svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.icon-defs{position:absolute;width:0;height:0;overflow:hidden}
+    .topbar{height:88px;padding:0 max(24px,calc((100vw - 1140px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px;background:var(--white);border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--ink);color:#fff}.brand-mark svg{width:26px;height:26px}.brand strong{font-size:21px;letter-spacing:-.8px;display:block;line-height:1.1}.brand small{color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}.nav{display:flex;align-items:center;gap:20px}.nav a{text-decoration:none;font-size:13px;font-weight:600}.nav a:hover{text-decoration:underline}.nav a[aria-disabled="true"]{display:none}.icon-button{background:transparent;border:1px solid var(--line);border-radius:12px;color:var(--ink);width:42px;height:42px;display:grid;place-items:center}.icon-button:hover{background:var(--paper)}
+    .layout{max-width:1140px;margin:0 auto;padding:54px 24px 80px;display:grid;grid-template-columns:320px minmax(0,1fr);gap:64px}.intro{padding-top:16px}.eyebrow{display:inline-flex;align-items:center;gap:8px;text-transform:uppercase;font-weight:700;font-size:11px;letter-spacing:1.6px;color:var(--green);margin-bottom:15px}.eyebrow span{width:7px;height:7px;background:var(--accent);border-radius:100%}h1{font-size:42px;line-height:1.13;letter-spacing:-1.6px;margin:0 0 18px;font-weight:750}.intro>p{font-size:15px;color:var(--muted);max-width:295px;margin:0 0 30px}.steps{border-top:1px solid var(--line);padding-top:26px;margin-top:34px}.step{display:flex;align-items:center;gap:13px;padding:10px 0;font-size:13px;color:var(--muted)}.step-num{border:1px solid var(--line);width:29px;height:29px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:#fff}.step.current{color:var(--ink);font-weight:700}.step.current .step-num{background:var(--ink);border-color:var(--ink);color:#fff}.step small{display:block;font-size:11px;font-weight:400;color:var(--muted)}.desktop-note{margin-top:32px;font-size:12px;display:flex;align-items:flex-start;gap:9px;color:var(--muted)}.desktop-note svg{width:17px;margin-top:2px}.work-area{min-width:0}.card{background:var(--white);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:30px}.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px}.card-symbol{width:47px;height:47px;background:var(--pale);border-radius:14px;display:grid;place-items:center;color:var(--green)}.pill{font-size:11px;color:var(--muted);background:var(--paper);border-radius:20px;padding:5px 10px;white-space:nowrap}h2{font-size:24px;line-height:1.3;letter-spacing:-.6px;margin:0 0 8px}p.subtitle{margin:0 0 26px;color:var(--muted);font-size:14px}.field{margin-bottom:19px}.field label{display:block;font-size:13px;font-weight:650;margin-bottom:7px}.input{width:100%;height:51px;padding:12px 14px;border:1px solid #cfd9d1;border-radius:11px;background:#fff;color:var(--ink);min-width:0;font-size:16px}.input::placeholder{color:#99a59e}.input:focus{border-color:var(--green)}.input[readonly]{background:var(--paper)}.help{font-size:12px;line-height:1.6;color:var(--muted);margin:7px 0 0}.button{border:0;background:var(--ink);color:#fff;min-height:49px;border-radius:11px;padding:12px 19px;font-weight:650;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:9px;text-decoration:none}.button:hover:enabled{background:#265848}.button.secondary{color:var(--ink);background:var(--pale)}.button.secondary:hover:enabled{background:#dbeadd}.button.outline{background:#fff;border:1px solid var(--line);color:var(--ink)}.button.full{width:100%}.button.text{background:transparent;color:var(--muted);min-height:40px;padding:7px 0;font-size:12px;font-weight:500}.login-footer{margin-top:22px;padding-top:19px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:9px}.login-footer svg{width:17px;height:17px;margin-top:1px}.message{padding:13px 15px;border-radius:11px;background:#fff0ec;border:1px solid #f1d1c9;color:var(--red);font-size:13px;margin-bottom:20px;overflow-wrap:anywhere}.message.success{background:var(--pale);border-color:#c9dfce;color:var(--green)}
+    .operator{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:19px}.operator-person{display:flex;gap:11px;align-items:center;min-width:0}.avatar{height:38px;width:38px;flex-shrink:0;display:grid;place-items:center;background:var(--ink);color:white;border-radius:50%;font-size:13px;font-weight:700}.operator small{display:block;color:var(--muted);font-size:11px}.operator strong{font-size:14px;overflow-wrap:anywhere}.lookup-row{display:flex;gap:9px}.lookup-row .input{flex:1}.lookup-row .button{min-height:51px;padding:10px 17px}.scan-button{width:100%;margin-top:12px;min-height:44px}.scan-button svg{width:18px;height:18px}.search-card{padding:25px}.search-card h2{font-size:21px}.search-card .subtitle{margin-bottom:18px;font-size:13px}.empty{padding:35px 20px;text-align:center;color:var(--muted)}.empty .empty-icon{margin:0 auto 12px;display:grid;place-items:center;width:55px;height:55px;border:1px dashed #bccbc1;border-radius:18px}.empty-icon svg{width:28px;height:28px}.empty strong{display:block;font-size:14px;color:var(--ink);margin-bottom:5px}.empty p{font-size:12px;max-width:280px;margin:0 auto}.order-card{margin-top:19px;padding:25px}.order-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.order-head span{font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);font-weight:700}.order-head .pill{font-size:10px;color:var(--green);background:var(--pale);letter-spacing:.3px;text-transform:none}.tracking{font-size:23px;font-weight:750;letter-spacing:.3px;margin:6px 0 15px;line-height:1.3;overflow-wrap:anywhere}.order-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-bottom:19px;margin-bottom:20px;border-bottom:1px solid var(--line)}.order-meta dt{font-size:11px;color:var(--muted);margin-bottom:3px}.order-meta dd{margin:0;font-size:12px;font-weight:600;overflow-wrap:anywhere}.section-title{display:flex;align-items:center;justify-content:space-between;font-size:14px;gap:15px;margin-bottom:12px}.section-title strong{font-weight:650}.section-title span{font-size:11px;color:var(--muted)}.items{display:grid;gap:10px}.item{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--line);border-radius:13px;padding:16px 14px;cursor:pointer;transition:background .15s}.item:has(input:checked){background:#f0f6ef;border-color:#b8d2bc}.item input{width:22px;height:22px;margin:2px 0 0;accent-color:var(--green);flex-shrink:0}.item-text{flex:1;min-width:0}.item-name{font-size:14px;font-weight:650;line-height:1.4;display:block;overflow-wrap:anywhere}.item-detail{font-size:11px;color:var(--muted);display:block;margin-top:5px;overflow-wrap:anywhere}.item-confirm{font-size:11px;color:var(--green);display:block;margin-top:7px}.qty{display:flex;flex-direction:column;align-items:center;flex-shrink:0;border-left:1px solid var(--line);padding-left:12px;min-width:39px}.qty strong{font-size:21px;line-height:1.15}.qty small{font-size:10px;color:var(--muted)}.progress{height:5px;background:var(--paper);border-radius:6px;overflow:hidden;margin:21px 0 9px}.progress div{height:100%;background:var(--green);width:0;transition:width .2s}.progress-label{font-size:12px;color:var(--muted);margin:0 0 18px}.complete-status{margin:20px 0 0;padding:16px;background:var(--pale);border:1px solid #c9dfce;border-radius:13px;color:var(--green);display:flex;gap:11px;align-items:flex-start}.complete-status strong{display:block;font-size:14px}.complete-status p{font-size:12px;margin:4px 0 0}.next-button{margin-top:13px}.session-note{text-align:center;font-size:11px;color:var(--muted);margin:22px 0}.mobile-flow{display:none}
+    dialog{color:var(--ink);border:1px solid var(--line);border-radius:20px;padding:27px;width:min(460px,calc(100% - 32px));box-shadow:0 24px 100px #122d3438;max-height:90dvh;overflow:auto}dialog::backdrop{background:#17393180;backdrop-filter:blur(3px)}.dialog-top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:20px}.dialog-top h2{font-size:20px;margin:0}.dialog-top .icon-button{width:32px;height:32px;flex-shrink:0}.dialog-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}.camera-frame{position:relative;aspect-ratio:4/3;border-radius:14px;background:#112b26;overflow:hidden;margin-bottom:15px}.camera-frame video{width:100%;height:100%;object-fit:cover}.camera-target{position:absolute;inset:25% 10%;border:2px solid #fff9;border-radius:10px;pointer-events:none}.camera-target:after{content:"";position:absolute;left:5%;right:5%;top:50%;border-top:2px solid var(--accent);box-shadow:0 0 12px var(--accent)}.spinner{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .75s linear infinite;display:inline-block}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:800px){.layout{grid-template-columns:250px minmax(0,1fr);gap:28px;padding-top:35px}h1{font-size:35px}.card{padding:23px}.topbar{height:76px}.nav{gap:14px}}
+    @media(max-width:620px){.topbar{height:72px;padding:0 20px}.brand strong{font-size:19px}.brand-mark{height:37px;width:37px;border-radius:11px}.brand small{font-size:9px}.nav{gap:12px}.nav a{font-size:11px}.icon-button{height:36px;width:36px}.layout{display:block;padding:24px 18px 42px}.intro{padding:0}.intro .eyebrow{margin-bottom:9px;font-size:10px}.intro h1{font-size:29px;letter-spacing:-.8px;margin-bottom:10px}.intro h1 br{display:none}.intro>p{font-size:13px;max-width:100%;margin:0 0 21px}.steps,.desktop-note{display:none}.card{border-radius:18px;padding:23px}.card-top{margin-bottom:19px}h2{font-size:22px}.operator{margin-bottom:14px}.search-card{padding:20px}.search-card .subtitle{font-size:12px}.order-card{padding:20px}.mobile-flow{display:block;font-size:10px;color:var(--muted);text-align:center;margin:24px 0 0}.mobile-flow strong{color:var(--ink)}.empty{padding-top:31px}.tracking{font-size:21px}.nav .link-label{display:none}.item{padding:14px 12px}.login-footer{font-size:11px}.session-note{margin:15px 0 0}dialog{padding:23px}.order-meta{gap:10px}.dialog-actions .button{flex:1}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true"><defs>
+    <symbol id="box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5"/></symbol>
+    <symbol id="settings" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2" fill="currentColor"/><circle cx="16" cy="12" r="2" fill="currentColor"/><circle cx="10" cy="18" r="2" fill="currentColor"/></symbol>
+    <symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Zm-4 9 3 3 5-6"/></symbol>
+    <symbol id="scan" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5M7 7v10M10 7v10M14 7v10M17 7v10"/></symbol>
+    <symbol id="check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+  </defs></svg>
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark"><svg><use href="#box"/></svg></div><div><strong>meirista<span style="color:var(--accent)">.</span></strong><small>Fulfillment workspace</small></div></div>
+    <nav class="nav" aria-label="Aplikasi"><a id="packerLink" href="index.html">Packer <span class="link-label">↗</span></a><button id="settingsButton" class="icon-button" type="button" aria-label="Pengaturan sambungan"><svg><use href="#settings"/></svg></button></nav>
+  </header>
+  <main class="layout">
+    <aside class="intro"><div class="eyebrow"><span></span> Picker workspace</div><h1>Pesanan tepat.<br>Siap dikemas.</h1><p>Periksa barang sesuai resi, pastikan jumlahnya, lalu teruskan ke tim packing.</p>
+      <div class="steps" aria-label="Alur fulfillment"><div class="step"><div class="step-num">01</div><div>Admin impor<small>Data pesanan dari Shopee</small></div></div><div class="step current"><div class="step-num">02</div><div>Picker periksa<small>Cocokkan barang dan jumlahnya</small></div></div><div class="step"><div class="step-num">03</div><div>Packer rekam<small>Kemas dan simpan bukti video</small></div></div></div>
+      <div class="desktop-note"><svg><use href="#shield"/></svg><span>Setiap pemeriksaan tercatat atas nama picker yang masuk.</span></div>
+    </aside>
+    <section class="work-area" aria-label="Area kerja picker">
+      <div id="globalMessage" class="message" role="alert" hidden></div>
+      <section id="loginCard" class="card">
+        <div class="card-top"><div class="card-symbol"><svg><use href="#user"/></svg></div><span class="pill">Khusus tim picking</span></div>
+        <h2>Masuk sebagai picker</h2><p class="subtitle">Gunakan kode dan PIN dari admin untuk mulai memeriksa pesanan.</p>
+        <form id="loginForm"><div class="field"><label for="pickerCode">Kode picker</label><input id="pickerCode" class="input" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Contoh: PICK01" required maxlength="80"></div><div class="field"><label for="pickerPin">PIN</label><input id="pickerPin" class="input" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Masukkan PIN Anda" required maxlength="128"></div><button id="loginButton" class="button full" type="submit">Masuk & mulai periksa <svg><use href="#arrow"/></svg></button></form>
+        <div class="login-footer"><svg><use href="#shield"/></svg><span>Akun picker dibuat oleh admin. Hubungi admin jika Anda belum memiliki kode atau PIN.</span></div>
+      </section>
+      <section id="workspace" hidden>
+        <div class="operator"><div class="operator-person"><div id="pickerAvatar" class="avatar">P</div><div><small>Picker bertugas</small><strong id="pickerName"></strong></div></div><button id="logoutButton" class="button text" type="button">Keluar</button></div>
+        <section class="card search-card"><h2>Periksa pesanan</h2><p class="subtitle">Scan barcode atau masukkan nomor resi pada label.</p><form id="lookupForm"><label for="resiInput" class="help" style="display:block;margin:0 0 7px;font-weight:600">Nomor resi</label><div class="lookup-row"><input id="resiInput" class="input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Masukkan nomor resi" maxlength="120" required enterkeyhint="search"><button id="lookupButton" class="button" type="submit">Cari <svg><use href="#search"/></svg></button></div></form><button id="scanButton" class="button outline scan-button" type="button"><svg><use href="#scan"/></svg> Scan dengan kamera HP</button><p id="scanHint" class="help" hidden></p></section>
+        <div id="emptyState" class="empty"><div class="empty-icon"><svg><use href="#box"/></svg></div><strong>Mulai dari satu resi</strong><p>Barang pada pesanan akan muncul di sini setelah resi ditemukan.</p></div>
+        <section id="orderCard" class="card order-card" aria-label="Detail pesanan" hidden>
+          <div class="order-head"><span>Nomor resi</span><span id="orderBadge" class="pill">Perlu diperiksa</span></div><div id="orderResi" class="tracking"></div>
+          <dl class="order-meta"><div><dt>Nomor pesanan Shopee</dt><dd id="orderSn"></dd></div><div><dt>Penerima</dt><dd id="orderRecipient"></dd></div></dl>
+          <div class="section-title"><strong>Daftar barang</strong><span id="itemCount"></span></div><p class="help" style="margin:0 0 14px">Centang setiap barang setelah SKU, variasi, dan seluruh jumlahnya sesuai.</p>
+          <div id="itemList" class="items"></div>
+          <div id="checkActions"><div class="progress" role="progressbar" aria-label="Barang diperiksa" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="checkProgress"><div id="progressFill"></div></div><p id="progressLabel" class="progress-label" aria-live="polite"></p><button id="completeButton" class="button full" type="button" disabled><svg><use href="#check"/></svg> Selesaikan pemeriksaan</button></div>
+          <div id="completeStatus" class="complete-status" role="status" hidden><svg><use href="#check"/></svg><div><strong>Siap untuk packing</strong><p id="completedBy"></p></div></div><button id="nextButton" class="button secondary full next-button" type="button" hidden>Periksa resi berikutnya <svg><use href="#arrow"/></svg></button>
+        </section>
+        <p class="session-note">Sesi hanya tersimpan di tab ini. Keluar setelah selesai bekerja.</p>
+      </section>
+      <p class="mobile-flow">Admin impor &nbsp;→&nbsp; <strong>Picker periksa</strong> &nbsp;→&nbsp; Packer rekam</p>
+    </section>
+  </main>
+  <dialog id="settingsDialog" aria-labelledby="settingsTitle"><div class="dialog-top"><h2 id="settingsTitle">Sambungan aplikasi</h2><button id="closeSettings" class="icon-button" aria-label="Tutup pengaturan" type="button"><svg><use href="#close"/></svg></button></div><p class="subtitle">Diatur sekali pada perangkat ini menggunakan informasi dari admin.</p><div id="settingsMessage" class="message" role="alert" hidden></div><form id="settingsForm"><div class="field"><label for="backendUrl">URL web app</label><input id="backendUrl" class="input" type="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false"><p id="urlHelp" class="help">Gunakan URL deployment Google Apps Script yang berakhiran /exec.</p></div><div class="field"><label for="backendKey">Kunci stasiun</label><input id="backendKey" class="input" type="password" autocomplete="off" required placeholder="Diberikan oleh admin" maxlength="500"></div><p class="help">Sambungan dipakai bersama aplikasi packing di browser ini. Mengubah sambungan akan mengeluarkan sesi picker.</p><div class="dialog-actions"><button id="cancelSettings" class="button outline" type="button">Batal</button><button class="button" type="submit">Simpan sambungan</button></div></form></dialog>
+  <dialog id="cameraDialog" aria-labelledby="cameraTitle"><div class="dialog-top"><h2 id="cameraTitle">Scan nomor resi</h2><button id="closeCamera" class="icon-button" aria-label="Tutup kamera" type="button"><svg><use href="#close"/></svg></button></div><div class="camera-frame"><video id="scannerVideo" autoplay muted playsinline></video><div class="camera-target"></div></div><p id="cameraMessage" class="help" aria-live="polite">Arahkan barcode resi ke tengah bingkai.</p><button id="manualButton" type="button" class="button outline full" style="margin-top:20px">Ketik resi secara manual</button></dialog>
+  <script>
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const storage = {
+    get(key, session = false) { try { return (session ? sessionStorage : localStorage).getItem('pr_' + key) || ''; } catch (_) { return ''; } },
+    set(key, value, session = false) { try { (session ? sessionStorage : localStorage).setItem('pr_' + key, value); } catch (_) {} },
+    remove(key, session = false) { try { (session ? sessionStorage : localStorage).removeItem('pr_' + key); } catch (_) {} }
+  };
+  const HOSTED = !!(window.google && google.script && google.script.run);
+  const BACKEND = { url: storage.get('backendUrl') || document.querySelector('meta[name="app-url"]')?.content || '', key: storage.get('backendKey') };
+  let token = storage.get('pickerToken', true), picker = null;
+  try { picker = JSON.parse(storage.get('pickerProfile', true)); } catch (_) {}
+  if (!picker || !token) { token = ''; picker = null; }
+  let currentOrder = null, currentPicking = null, checked = new Set();
+  let generation = 0, searching = false, completing = false, loggingIn = false;
+  let cameraStream = null, cameraGeneration = 0, cameraFrame = 0;
+
+  function validBackendUrl(value) {
+    try { const url = new URL(value); return url.protocol === 'https:' && url.hostname === 'script.google.com' && /^\/macros\/s\/[^/]+\/exec$/.test(url.pathname) && !url.username && !url.password && !url.search && !url.hash; } catch (_) { return false; }
+  }
+  function configured() { return !!BACKEND.key && (HOSTED || validBackendUrl(BACKEND.url)); }
+  function updateAppLink() {
+    const link = $('packerLink');
+    if (!HOSTED) { link.href = 'index.html'; return; }
+    const metaUrl = document.querySelector('meta[name="app-url"]')?.content;
+    const base = validBackendUrl(metaUrl) ? metaUrl : validBackendUrl(document.baseURI) ? document.baseURI : BACKEND.url;
+    if (validBackendUrl(base)) { link.href = base + '?app=packer'; link.target = '_top'; link.removeAttribute('aria-disabled'); }
+    else { link.removeAttribute('href'); link.setAttribute('aria-disabled', 'true'); }
+  }
+  function message(text, success = false) { $('globalMessage').textContent = text; $('globalMessage').className = 'message' + (success ? ' success' : ''); $('globalMessage').hidden = !text; }
+  function errorText(error) { return String(error && error.message || error || 'Terjadi kesalahan. Silakan coba lagi.'); }
+  function handleError(error) {
+    const text = errorText(error);
+    if (text.startsWith('SESSION:')) { clearSession(); message('Sesi berakhir. Silakan masuk kembali untuk melanjutkan.'); }
+    else message(text);
+  }
+  async function rpc(fn, ...args) {
+    if (!configured()) throw new Error('Sambungan belum diatur. Buka pengaturan sambungan, lalu masukkan informasi dari admin.');
+    let envelope;
+    if (HOSTED) {
+      envelope = await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('Sambungan terlalu lama. Periksa koneksi dan coba lagi.')), 35000);
+        google.script.run.withSuccessHandler(value => { clearTimeout(timer); resolve(value); }).withFailureHandler(error => { clearTimeout(timer); reject(new Error(errorText(error))); }).stationRpc(BACKEND.key, fn, args);
+      });
+    } else {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 35000);
+      try {
+        const response = await fetch(BACKEND.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ key: BACKEND.key, fn, args }), signal: controller.signal, redirect: 'follow' });
+        if (!response.ok) throw new Error('Sambungan gagal (HTTP ' + response.status + '). Periksa deployment bersama admin.');
+        try { envelope = await response.json(); } catch (_) { throw new Error('Jawaban server tidak valid. Pastikan URL deployment dan hak akses web app sudah benar.'); }
+      } catch (error) {
+        if (error.name === 'AbortError') throw new Error('Sambungan terlalu lama. Periksa koneksi dan coba lagi.');
+        if (error instanceof TypeError) throw new Error('Server tidak dapat dihubungi. Periksa internet dan pengaturan sambungan.');
+        throw error;
+      } finally { clearTimeout(timer); }
+    }
+    if (!envelope || !envelope.ok) throw new Error(envelope && envelope.error || 'Permintaan ditolak oleh server.');
+    return envelope.result;
+  }
+  function updateSessionView() {
+    $('loginCard').hidden = !!token; $('workspace').hidden = !token;
+    $('pickerName').textContent = picker?.name || '';
+    $('pickerAvatar').textContent = (picker?.name || 'P').trim().slice(0, 2).toUpperCase();
+    $('loginButton').disabled = loggingIn;
+    $('loginButton').textContent = loggingIn ? 'Sedang masuk…' : 'Masuk & mulai periksa →';
+  }
+  function clearOrder() {
+    currentOrder = null; currentPicking = null; checked = new Set();
+    $('orderCard').hidden = true; $('emptyState').hidden = false;
+    $('itemList').replaceChildren();
+  }
+  function clearSession() {
+    generation++; stopCamera(); token = ''; picker = null; searching = false; completing = false; loggingIn = false;
+    storage.remove('pickerToken', true); storage.remove('pickerProfile', true);
+    $('pickerPin').value = ''; $('resiInput').value = ''; clearOrder(); updateBusy(); updateSessionView();
+  }
+  function updateBusy() {
+    $('lookupButton').disabled = searching || completing;
+    $('lookupButton').textContent = searching ? 'Mencari…' : 'Cari';
+    $('resiInput').readOnly = completing;
+    $('scanButton').disabled = searching || completing;
+    $('logoutButton').disabled = completing;
+    $('settingsButton').disabled = completing;
+    $('completeButton').disabled = completing || searching || !currentOrder || checked.size !== currentOrder.items.length || !!currentPicking;
+    $('completeButton').textContent = completing ? 'Menyimpan pemeriksaan…' : 'Selesaikan pemeriksaan';
+    $('itemList').querySelectorAll('input').forEach(input => { input.disabled = completing || !!currentPicking; });
+  }
+  function textNode(tag, className, text) { const element = document.createElement(tag); if (className) element.className = className; element.textContent = text; return element; }
+  function formatDate(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? '' : date.toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+  function updateProgress() {
+    if (!currentOrder) return;
+    const total = currentOrder.items.length, count = checked.size;
+    $('progressFill').style.width = (total ? count / total * 100 : 0) + '%';
+    $('checkProgress').setAttribute('aria-valuenow', String(total ? Math.round(count / total * 100) : 0));
+    $('progressLabel').textContent = count + ' dari ' + total + ' jenis barang sudah diperiksa';
+    updateBusy();
+  }
+  function renderOrder() {
+    const order = currentOrder; if (!order) return;
+    const done = !!currentPicking?.complete;
+    $('emptyState').hidden = true; $('orderCard').hidden = false;
+    $('orderResi').textContent = order.resi; $('orderSn').textContent = order.orderSn || '—'; $('orderRecipient').textContent = order.recipient || order.buyer || '—';
+    $('orderBadge').textContent = done ? 'Sudah diperiksa' : 'Perlu diperiksa';
+    $('itemCount').textContent = order.items.length + ' jenis · ' + order.items.reduce((total, item) => total + Number(item.qty || 0), 0) + ' unit';
+    $('itemList').replaceChildren();
+    order.items.forEach((item, index) => {
+      const label = textNode('label', 'item', '');
+      const input = document.createElement('input'); input.type = 'checkbox'; input.checked = done || checked.has(index); input.disabled = done || completing; input.setAttribute('aria-label', 'Periksa ' + item.qty + ' unit ' + item.name + (item.variation ? ', ' + item.variation : ''));
+      input.addEventListener('change', () => { if (input.checked) checked.add(index); else checked.delete(index); updateProgress(); });
+      const detail = textNode('span', 'item-text', ''); detail.append(textNode('span', 'item-name', item.name || 'Barang tanpa nama'), textNode('span', 'item-detail', 'SKU: ' + (item.sku || '—')), textNode('span', 'item-detail', 'Variasi: ' + (item.variation || '—')), textNode('span', 'item-confirm', 'Pastikan seluruh ' + item.qty + ' unit sesuai'));
+      const qty = textNode('span', 'qty', ''); qty.append(textNode('strong', '', item.qty), textNode('small', '', 'unit'));
+      label.append(input, detail, qty); $('itemList').append(label);
+    });
+    $('checkActions').hidden = done; $('completeStatus').hidden = !done; $('nextButton').hidden = !done;
+    $('completedBy').textContent = done ? 'Diperiksa oleh ' + (currentPicking.pickerName || 'picker') + (formatDate(currentPicking.completedAt) ? ' · ' + formatDate(currentPicking.completedAt) : '') : '';
+    updateProgress();
+  }
+  async function lookup() {
+    if (!token || completing) return;
+    const resi = $('resiInput').value.trim(); if (!resi) { $('resiInput').focus(); return; }
+    stopCamera(); const request = ++generation; searching = true; clearOrder(); message(''); updateBusy();
+    try {
+      const result = await rpc('pickerLookup', token, resi);
+      if (request !== generation || !token) return;
+      if (!result || !result.order) throw new Error('Resi belum ditemukan. Pastikan admin sudah mengimpor pesanan Shopee ini.');
+      const order = result.order;
+      if (!Array.isArray(order.items) || !order.items.length || !order.orderVersion) throw new Error('Data barang pesanan belum lengkap. Minta admin memeriksa hasil impor.');
+      if (['CANCELLED', 'IN_CANCEL', 'UNPAID'].includes(String(order.status || '').toUpperCase())) throw new Error('Pesanan dibatalkan atau belum dibayar sehingga tidak dapat diproses.');
+      if (order.items.some(item => !Number.isInteger(Number(item.qty)) || Number(item.qty) <= 0)) throw new Error('Jumlah barang tidak valid. Minta admin memperbaiki data impor.');
+      currentOrder = order; currentPicking = result.picking?.complete ? result.picking : null; checked = new Set(); renderOrder();
+    } catch (error) { if (request === generation) handleError(error); }
+    finally { if (request === generation) { searching = false; updateBusy(); } }
+  }
+  $('loginForm').addEventListener('submit', async event => {
+    event.preventDefault(); if (loggingIn) return;
+    if (!configured()) { message('Atur sambungan terlebih dahulu menggunakan informasi dari admin.'); openSettings(); return; }
+    const code = $('pickerCode').value.trim(), pin = $('pickerPin').value; if (!code || !pin) return;
+    const request = ++generation; loggingIn = true; message(''); updateSessionView();
+    try {
+      const result = await rpc('pickerLogin', code, pin);
+      if (request !== generation) return;
+      if (!result?.token || !result.picker?.name) throw new Error('Jawaban login tidak lengkap. Hubungi admin.');
+      token = result.token; picker = result.picker; storage.set('pickerToken', token, true); storage.set('pickerProfile', JSON.stringify(picker), true); $('pickerPin').value = ''; clearOrder();
+    } catch (error) { if (request === generation) handleError(error); }
+    finally { if (request === generation) { loggingIn = false; updateSessionView(); if (token) $('resiInput').focus(); } }
+  });
+  $('lookupForm').addEventListener('submit', event => { event.preventDefault(); lookup(); });
+  $('completeButton').addEventListener('click', async () => {
+    if (!currentOrder || completing || searching || checked.size !== currentOrder.items.length || currentPicking) return;
+    const request = ++generation, order = currentOrder; completing = true; message(''); updateBusy();
+    try {
+      const result = await rpc('pickerComplete', token, order.resi, [...checked].sort((a, b) => a - b), order.orderVersion);
+      if (request !== generation) return;
+      if (!result?.complete) throw new Error('Status penyimpanan belum dapat dipastikan.');
+      currentPicking = result; renderOrder();
+    } catch (error) {
+      if (request === generation) {
+        clearOrder();
+        if (errorText(error).startsWith('SESSION:')) handleError(error);
+        else message(errorText(error) + ' Cari ulang resi untuk memastikan status terbaru sebelum melanjutkan.');
+      }
+    } finally { if (request === generation) { completing = false; updateBusy(); } }
+  });
+  $('nextButton').addEventListener('click', () => { generation++; clearOrder(); message(''); $('resiInput').value = ''; $('resiInput').focus(); });
+  $('logoutButton').addEventListener('click', () => { const previousToken = token; const logout = previousToken ? rpc('pickerLogout', previousToken) : Promise.resolve(); clearSession(); message('Anda sudah keluar.', true); logout.catch(() => {}); });
+  function openSettings() {
+    stopCamera(); $('backendUrl').value = BACKEND.url; $('backendKey').value = BACKEND.key; $('backendUrl').required = !HOSTED; $('settingsMessage').hidden = true;
+    $('urlHelp').textContent = HOSTED ? 'Opsional saat dibuka dari Apps Script. Isi URL /exec untuk berpindah ke aplikasi packer.' : 'Gunakan URL deployment Google Apps Script yang berakhiran /exec.';
+    $('settingsDialog').showModal();
+  }
+  $('settingsButton').addEventListener('click', openSettings);
+  for (const id of ['closeSettings', 'cancelSettings']) $(id).addEventListener('click', () => $('settingsDialog').close());
+  $('settingsForm').addEventListener('submit', event => {
+    event.preventDefault(); const url = $('backendUrl').value.trim(), key = $('backendKey').value.trim();
+    if ((!HOSTED || url) && !validBackendUrl(url)) { $('settingsMessage').textContent = 'URL harus berupa https://script.google.com/macros/s/…/exec tanpa parameter tambahan.'; $('settingsMessage').hidden = false; return; }
+    if (!key) return;
+    if (BACKEND.url !== url || BACKEND.key !== key) {
+      const previousToken = token; if (previousToken && configured()) rpc('pickerLogout', previousToken).catch(() => {});
+      clearSession(); BACKEND.url = url; BACKEND.key = key; storage.set('backendUrl', url); storage.set('backendKey', key);
+    }
+    updateAppLink(); $('settingsDialog').close(); message('Sambungan tersimpan. Silakan masuk dengan akun picker.', true); $('pickerCode').focus();
+  });
+  function stopCamera() {
+    cameraGeneration++; cancelAnimationFrame(cameraFrame);
+    if (cameraStream) cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null; $('scannerVideo').srcObject = null;
+    if ($('cameraDialog').open) $('cameraDialog').close();
+  }
+  async function startCamera() {
+    if (!token || searching || completing) return;
+    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) { message('Kamera memerlukan HTTPS dan izin browser. Anda tetap dapat mengetik resi atau memakai scanner USB.'); $('resiInput').focus(); return; }
+    if (!('BarcodeDetector' in window)) { message('Scan kamera belum didukung browser ini. Gunakan Chrome Android yang mendukung pemindaian, scanner USB, atau ketik nomor resi.'); $('resiInput').focus(); return; }
+    stopCamera(); const request = cameraGeneration; message(''); $('cameraMessage').textContent = 'Mengaktifkan kamera belakang…'; $('cameraDialog').showModal();
+    try {
+      const supported = await BarcodeDetector.getSupportedFormats();
+      const formats = ['code_128', 'code_39', 'code_93', 'codabar', 'ean_13', 'itf', 'qr_code'].filter(format => supported.includes(format));
+      if (!formats.length) throw new Error('Format barcode tidak didukung. Ketik resi secara manual.');
+      if (request !== cameraGeneration) return;
+      const detector = new BarcodeDetector({ formats });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 } }, audio: false });
+      if (request !== cameraGeneration) { stream.getTracks().forEach(track => track.stop()); return; }
+      cameraStream = stream; const video = $('scannerVideo'); video.srcObject = stream; await video.play();
+      if (request !== cameraGeneration) return;
+      $('cameraMessage').textContent = 'Arahkan barcode resi ke tengah bingkai. Kamera berhenti setelah resi terbaca.';
+      const detect = async () => {
+        if (request !== cameraGeneration) return;
+        try {
+          if (video.readyState >= 2) {
+            const codes = await detector.detect(video);
+            if (request !== cameraGeneration) return;
+            const code = codes.find(item => /^[A-Za-z0-9_-]{4,120}$/.test(String(item.rawValue || '').trim()));
+            if (code) { $('resiInput').value = String(code.rawValue).trim(); stopCamera(); await lookup(); return; }
+            if (codes.length) $('cameraMessage').textContent = 'Barcode terbaca bukan nomor resi. Arahkan kamera ke barcode resi pada label.';
+          }
+        } catch (_) { if (request === cameraGeneration) { stopCamera(); message('Barcode tidak dapat dipindai. Ketik resi secara manual.'); } return; }
+        if (request === cameraGeneration) cameraFrame = requestAnimationFrame(detect);
+      };
+      cameraFrame = requestAnimationFrame(detect);
+    } catch (error) {
+      if (request !== cameraGeneration) return;
+      stopCamera(); message(error.name === 'NotAllowedError' ? 'Izin kamera ditolak. Izinkan kamera di browser atau ketik resi secara manual.' : error.name === 'NotFoundError' ? 'Kamera tidak ditemukan. Ketik resi atau gunakan scanner USB.' : 'Kamera tidak dapat dibuka. ' + errorText(error)); $('resiInput').focus();
+    }
+  }
+  $('scanButton').addEventListener('click', startCamera);
+  for (const id of ['closeCamera', 'manualButton']) $(id).addEventListener('click', () => { stopCamera(); $('resiInput').focus(); });
+  $('cameraDialog').addEventListener('cancel', event => { event.preventDefault(); stopCamera(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopCamera(); });
+  window.addEventListener('pagehide', stopCamera);
+  if (!('BarcodeDetector' in window)) { $('scanHint').textContent = 'Browser ini belum mendukung scan kamera. Ketik resi atau gunakan scanner barcode.'; $('scanHint').hidden = false; }
+  updateAppLink(); updateSessionView(); updateBusy();
+  if (!configured()) message('Perangkat ini belum diatur. Buka ikon pengaturan untuk menyambungkan aplikasi.');
+  </script>
+</body>
+</html>
